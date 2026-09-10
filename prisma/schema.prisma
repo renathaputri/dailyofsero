@@ -1,0 +1,185 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ================= AUTH =================
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String   // hashed
+  isVerified    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  journalEntries     JournalEntry[]
+  bookmarks          ContentBankBookmark[]
+  streak             Streak?
+  notifications      Notification[]
+  verificationTokens VerificationToken[]
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  type      String   // EMAIL_VERIFY, PASSWORD_RESET
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+enum AdminRole {
+  ADMIN
+  SUPERADMIN
+}
+
+enum AdminTitle {
+  MIND_CAPTAIN
+  CO_CAPTAIN
+  BA
+}
+
+model Admin {
+  id           String     @id @default(cuid())
+  username     String     @unique
+  password     String     // hashed
+  role         AdminRole  @default(ADMIN)
+  title        AdminTitle @default(BA)
+  name         String
+  photoUrl     String?    // Image URL
+  bio          String?
+  createdAt    DateTime   @default(now())
+
+  karya        Karya[]
+  contentBank  ContentBank[]
+  notifications Notification[]
+}
+
+// ================= KARYA =================
+
+enum KaryaCategory {
+  SELF_AWARENESS
+  MENTAL_HEALTH
+  GROWTH
+  CONNECTION
+  COMMUNITY
+  OTHER
+}
+
+model Karya {
+  id          String        @id @default(cuid())
+  title       String
+  description String
+  category    KaryaCategory
+  linkPost    String        // link ke IG post
+  ownerId     String
+  owner       Admin         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now())
+}
+
+// ================= EVENT =================
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  eventDate   DateTime
+  formLink    String
+  createdAt   DateTime @default(now())
+}
+
+// ================= HEALING =================
+
+model JournalEntry {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentEnc String   // encrypted content (AES-256-GCM)
+  createdAt  DateTime @default(now())
+}
+
+model Streak {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currentStreak Int       @default(0)
+  longestStreak Int       @default(0)
+  lastEntryDate DateTime?
+}
+
+// ================= CONTENT BANK =================
+
+enum ContentType {
+  CALMING_SENTENCE
+  GUIDED_PROMPT
+}
+
+enum MoodCategory {
+  SENANG
+  SEDIH
+  CEMAS
+  MARAH
+  LELAH
+  TENANG
+  BINGUNG
+}
+
+model ContentBank {
+  id          String       @id @default(cuid())
+  type        ContentType
+  content     String
+  tag         MoodCategory
+  createdById String
+  createdBy   Admin        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+
+  bookmarkedBy ContentBankBookmark[]
+}
+
+model ContentBankBookmark {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentBankId String
+  contentBank   ContentBank @relation(fields: [contentBankId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+
+  @@unique([userId, contentBankId])
+}
+
+// ================= AWAREMIND =================
+
+model Counselor {
+  id        String   @id @default(cuid())
+  name      String
+  photoUrl  String?
+  createdAt DateTime @default(now())
+}
+
+// ================= NOTIFICATIONS =================
+
+enum NotificationType {
+  KARYA_TAKEDOWN
+  PASSWORD_RESET
+  KARYA_PUBLISHED
+  EVENT_PUBLISHED
+  CONTENT_BANK_ADDED
+  STREAK_MILESTONE
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  adminId   String?
+  admin     Admin?           @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}

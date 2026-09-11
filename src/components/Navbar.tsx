@@ -80,19 +80,11 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition-all">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-18 py-3">
-          {/* Brand Logo */}
-          <a href="/" className="flex items-center gap-3 group focus:outline-none">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sero-purple-600 via-indigo-600 to-sero-blue-500 flex items-center justify-center shadow-md shadow-sero-purple-300/40 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-xl tracking-tight bg-gradient-to-r from-sero-purple-700 to-indigo-700 bg-clip-text text-transparent">
-                DailyOfSero
-              </span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
-                Safe Space & Mind
-              </span>
-            </div>
+          {/* Brand Logo - Plain Text Only */}
+          <a href="/" className="flex items-center focus:outline-none group">
+            <span className="font-black text-2xl tracking-tight text-purple-700 group-hover:text-purple-800 transition-colors">
+              DailyofSero
+            </span>
           </a>
 
           {/* Desktop Navigation Links */}

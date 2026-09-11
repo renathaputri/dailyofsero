@@ -34,7 +34,7 @@ export default function RootLayout({
         </div>
 
         <Navbar />
-        <main className="flex-grow w-full max-w-[1600px] mx-auto">{children}</main>
+        <main className="flex-grow w-full">{children}</main>
         <Footer />
         <EmergencyButton />
       </body>

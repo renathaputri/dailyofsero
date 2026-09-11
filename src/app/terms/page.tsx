@@ -27,7 +27,7 @@ export default function TermsOfServicePage() {
             <ShieldAlert className="w-5 h-5 text-rose-500" /> 2. Batasan Layanan Medis Darurat
           </h2>
           <p>
-            Fitur-fitur di DailyOfSero (termasuk Mood-Star, latihan pernapasan, dan jurnal) dirancang sebagai alat bantu self-care, <strong>bukan pengganti diagnosa klinis, terapi medis, atau penanganan darurat kejiwaan</strong>.
+            Fitur-fitur di DailyofSero (termasuk pelacak mood, latihan pernapasan, dan jurnal) dirancang sebagai alat bantu self-care, <strong>bukan pengganti diagnosa klinis, terapi medis, atau penanganan darurat kejiwaan</strong>.
           </p>
           <p>
             Jika kamu mengalami krisis kejiwaan akut atau memiliki kecenderungan melukai diri, segera gunakan tombol bantuan darurat yang tersedia untuk menghubungi hotline AwareMind atau layanan darurat kesehatan 119 ext 8.

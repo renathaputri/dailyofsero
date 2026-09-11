@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { 
   Heart, 
   Wind, 
-  Star, 
   Flame, 
   Lock, 
   Trash2, 
@@ -82,7 +81,6 @@ export default function HealingPage() {
 
   // Mood state
   const [selectedMood, setSelectedMood] = useState<string>("TENANG");
-  const [starRating, setStarRating] = useState<number>(5);
 
   // Journal state
   const [journalContent, setJournalContent] = useState("");
@@ -746,8 +744,8 @@ export default function HealingPage() {
           {activeTab === "MOOD" && (
             <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
               <div className="text-center max-w-xl mx-auto space-y-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> Check-in Emosi Harian
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-bold uppercase tracking-wider">
+                  <Heart className="w-3.5 h-3.5 text-purple-500" /> Check-in Emosi Harian
                 </span>
                 <h2 className="text-2xl font-bold text-slate-900">
                   Bagaimana Kondisi Hatimu Saat Ini?
@@ -779,28 +777,7 @@ export default function HealingPage() {
                 })}
               </div>
 
-              {/* Star Rating Scale */}
-              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-3">
-                <span className="text-xs font-semibold text-slate-600 block">
-                  Tingkat Energi / Ketenangan (Skala 1 - 5):
-                </span>
-                <div className="flex justify-center items-center gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      onClick={() => setStarRating(star)}
-                      className="p-1.5 hover:scale-125 transition-transform"
-                      title={`Beri rating ${star} bintang`}
-                    >
-                      <Star
-                        className={`w-7 h-7 ${
-                          star <= starRating ? "fill-amber-400 text-amber-400" : "text-slate-300"
-                        }`}
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
+
 
               {/* Dynamic Affirmation */}
               <div className="p-5 rounded-2xl bg-sero-purple-50 border border-sero-purple-200 text-slate-800 text-sm leading-relaxed flex items-start gap-3">

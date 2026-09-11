@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, Sparkles, BookOpen, ArrowRight, ShieldCheck, Heart, Crown, Star } from "lucide-react";
+import { Users, Sparkles, BookOpen, ArrowRight, ShieldCheck, Heart, Crown, Award } from "lucide-react";
 
 interface TeamMember {
   id: string;
@@ -131,7 +131,7 @@ export default function TeamPage() {
           {coCaptains.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-purple-100">
-                <Star className="w-5 h-5 text-purple-600 fill-purple-100" />
+                <Award className="w-5 h-5 text-purple-600" />
                 <h2 className="text-xl font-bold text-slate-900">Co-Captain</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

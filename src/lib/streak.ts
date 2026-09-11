@@ -80,7 +80,7 @@ export async function updateUserStreak(userId: string): Promise<{
       data: {
         userId,
         type: "STREAK_MILESTONE",
-        message: `🎉 Keren banget! Kamu berhasil mencapai streak journaling ${newCurrent} hari berturut-turut! Tetap rawat kesehatan mentalmu ya ✨`,
+        message: `Keren banget! Kamu berhasil mencapai streak journaling ${newCurrent} hari berturut-turut! Tetap rawat kesehatan mentalmu ya.`,
       },
     });
   }

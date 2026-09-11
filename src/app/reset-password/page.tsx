@@ -49,7 +49,7 @@ function ResetPasswordContent() {
         return;
       }
 
-      setSuccessMessage(data.message || "Password baru kamu udah aktif! ✨");
+      setSuccessMessage(data.message || "Password baru kamu sudah aktif!");
       setLoading(false);
     } catch (err) {
       setError("Terjadi kendala jaringan.");
@@ -142,7 +142,7 @@ function ResetPasswordContent() {
               disabled={loading}
               className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-sero-purple-500 to-sero-purple-600 hover:from-sero-purple-600 hover:to-sero-purple-700 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 mt-4"
             >
-              {loading ? <span>Menyimpan Password...</span> : <span>Simpan Password Baru ✨</span>}
+              {loading ? <span>Menyimpan Password...</span> : <span>Simpan Password Baru</span>}
             </button>
           </form>
         )}

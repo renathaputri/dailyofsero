@@ -47,7 +47,7 @@ export default function AdminPortfolioPage() {
         return;
       }
 
-      setStatusAlert({ type: "success", text: "Mini portfolio berhasil diperbarui! ✨" });
+      setStatusAlert({ type: "success", text: "Mini portfolio berhasil diperbarui!" });
       setSaving(false);
     } catch (err) {
       setStatusAlert({ type: "error", text: "Terjadi kesalahan jaringan." });
@@ -170,7 +170,7 @@ export default function AdminPortfolioPage() {
               disabled={saving}
               className="px-6 py-2.5 rounded-full bg-sero-purple-600 hover:bg-sero-purple-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-all disabled:opacity-50"
             >
-              {saving ? "Menyimpan Perubahan..." : "Simpan Mini Portfolio ✨"}
+              {saving ? "Menyimpan Perubahan..." : "Simpan Mini Portfolio"}
             </button>
           </div>
         </form>

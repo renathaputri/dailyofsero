@@ -24,7 +24,7 @@ export async function GET(req: Request) {
       if (calmingQuotes.length === 0) {
         return NextResponse.json({
           quote: {
-            content: "Setiap langkah kecil adalah kemenangan. Tetaplah ramah pada dirimu hari ini. ✨",
+            content: "Setiap langkah kecil adalah kemenangan. Tetaplah ramah pada dirimu hari ini.",
             author: "Tim Serotonin",
           },
         });

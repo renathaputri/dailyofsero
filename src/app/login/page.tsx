@@ -52,7 +52,7 @@ export default function LoginPage() {
             <Sparkles className="w-6 h-6" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Selamat Datang Kembali! ✨
+            Selamat Datang Kembali
           </h1>
           <p className="text-sm text-slate-500">
             Masuk ke safe space kamu untuk melanjutkan refleksi hari ini.
@@ -177,7 +177,7 @@ export default function LoginPage() {
                   href="/register"
                   className="font-bold text-sero-blue-600 hover:text-sero-blue-700 hover:underline"
                 >
-                  Daftar sekarang ✨
+                  Daftar sekarang
                 </a>
               </p>
             </div>

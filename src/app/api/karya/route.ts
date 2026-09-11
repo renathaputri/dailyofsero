@@ -74,13 +74,13 @@ export async function POST(req: Request) {
       data: {
         adminId: session.id,
         type: "KARYA_PUBLISHED",
-        message: `✨ Karya barumu "${newKarya.title}" berhasil tayang di Galeri Komunitas!`,
+        message: `Karya barumu "${newKarya.title}" berhasil tayang di Galeri Komunitas!`,
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: "Karyamu berhasil ditayangkan! 🎉",
+      message: "Karyamu berhasil ditayangkan!",
       karya: newKarya,
     });
   } catch (error) {

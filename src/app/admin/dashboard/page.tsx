@@ -37,14 +37,14 @@ export default function AdminDashboardPage() {
       <div className="p-8 rounded-4xl bg-gradient-to-r from-sero-purple-500 to-sero-blue-500 text-white shadow-lg relative overflow-hidden">
         <div className="relative z-10 space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-sero-purple-100">
-            {isSuperadmin ? "👑 Superadmin Control Center" : "🌱 Brand Ambassador Space"}
+            {isSuperadmin ? "Superadmin Control Center" : "Brand Ambassador Space"}
           </span>
           <h1 className="text-2xl sm:text-3xl font-black">
-            {isSuperadmin ? "Ringkasan Statistik Komunitas" : "Selamat Datang di Portal BA! ✨"}
+            {isSuperadmin ? "Ringkasan Statistik Komunitas" : "Selamat Datang di Portal BA"}
           </h1>
           <p className="text-xs sm:text-sm text-sero-purple-50 max-w-xl leading-relaxed">
             {isSuperadmin
-              ? "Pantau pertumbuhan user terdaftar, karya publikasi, event, dan kesehatan ekosistem GrowthWithSero."
+              ? "Pantau pertumbuhan user terdaftar, karya publikasi, event, dan kesehatan ekosistem DailyOfSero."
               : "Kelola karya edukasi Instagram kamu, lengkapi mini portfolio, dan perkaya Content Bank untuk pengunjung."}
           </p>
         </div>

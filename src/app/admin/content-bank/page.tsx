@@ -18,13 +18,13 @@ interface ContentItem {
 
 const MOOD_TAGS = [
   { id: "ALL", label: "Semua Mood" },
-  { id: "SENANG", label: "Senang 😊" },
-  { id: "SEDIH", label: "Sedih 🥺" },
-  { id: "CEMAS", label: "Cemas 😰" },
-  { id: "MARAH", label: "Marah 😤" },
-  { id: "LELAH", label: "Lelah 🥱" },
-  { id: "TENANG", label: "Tenang 😌" },
-  { id: "BINGUNG", label: "Bingung 😵‍💫" },
+  { id: "SENANG", label: "Senang" },
+  { id: "SEDIH", label: "Sedih" },
+  { id: "CEMAS", label: "Cemas" },
+  { id: "MARAH", label: "Marah" },
+  { id: "LELAH", label: "Lelah" },
+  { id: "TENANG", label: "Tenang" },
+  { id: "BINGUNG", label: "Bingung" },
 ];
 
 export default function AdminContentBankPage() {
@@ -271,13 +271,13 @@ export default function AdminContentBankPage() {
                   onChange={(e) => setTag(e.target.value)}
                   className="w-full p-3 rounded-2xl border border-slate-200 text-xs text-slate-800 focus:ring-2 focus:ring-sero-purple-400"
                 >
-                  <option value="SENANG">Senang 😊</option>
-                  <option value="SEDIH">Sedih 🥺</option>
-                  <option value="CEMAS">Cemas 😰</option>
-                  <option value="MARAH">Marah 😤</option>
-                  <option value="LELAH">Lelah 🥱</option>
-                  <option value="TENANG">Tenang 😌</option>
-                  <option value="BINGUNG">Bingung 😵‍💫</option>
+                  <option value="SENANG">Senang</option>
+                  <option value="SEDIH">Sedih</option>
+                  <option value="CEMAS">Cemas</option>
+                  <option value="MARAH">Marah</option>
+                  <option value="LELAH">Lelah</option>
+                  <option value="TENANG">Tenang</option>
+                  <option value="BINGUNG">Bingung</option>
                 </select>
               </div>
 
@@ -308,7 +308,7 @@ export default function AdminContentBankPage() {
                   disabled={submitting}
                   className="px-6 py-2 rounded-xl bg-sero-purple-600 hover:bg-sero-purple-700 text-white text-xs font-bold shadow-sm disabled:opacity-50"
                 >
-                  {submitting ? "Menyimpan..." : "Simpan Konten ✨"}
+                  {submitting ? "Menyimpan..." : "Simpan Konten"}
                 </button>
               </div>
             </form>

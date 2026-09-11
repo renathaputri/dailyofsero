@@ -1,5 +1,5 @@
 /**
- * Email abstraction service for GrowthWithSero
+ * Email abstraction service for DailyOfSero
  * Supports Resend when RESEND_API_KEY is configured,
  * with detailed terminal/logger fallback for local dev & testing.
  */
@@ -13,7 +13,7 @@ interface SendEmailParams {
 
 export async function sendEmail({ to, subject, html, text }: SendEmailParams): Promise<{ success: boolean; messageId?: string }> {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || "GrowthWithSero <noreply@growthwithsero.com>";
+  const from = process.env.EMAIL_FROM || "DailyOfSero <noreply@dailyofsero.com>";
 
   if (apiKey) {
     try {
@@ -61,16 +61,16 @@ export async function sendVerificationEmail(to: string, token: string, appUrl: s
   const verifyLink = `${appUrl}/verify-email?token=${token}`;
   return sendEmail({
     to,
-    subject: "✨ Verifikasi Akun Kamu di GrowthWithSero",
+    subject: "Verifikasi Akun Kamu di DailyOfSero",
     html: `
       <div style="font-family: 'Montserrat', sans-serif; max-width: 600px; margin: auto; padding: 24px; background: #F8FAFC; border-radius: 16px;">
-        <h2 style="color: #0284C7;">Hai Sahabat Sero! 🌱</h2>
+        <h2 style="color: #0284C7;">Hai Sahabat Sero!</h2>
         <p style="color: #334155; font-size: 16px; line-height: 1.6;">
-          Selamat datang di <strong>GrowthWithSero</strong>! Satu langkah lagi untuk mulai perjalanan healing dan journaling kamu.
+          Selamat datang di <strong>DailyOfSero</strong>! Satu langkah lagi untuk mulai perjalanan healing dan journaling kamu.
         </p>
         <div style="text-align: center; margin: 32px 0;">
           <a href="${verifyLink}" style="background: linear-gradient(135deg, #38BDF8, #A855F7); color: white; padding: 14px 28px; border-radius: 9999px; text-decoration: none; font-weight: bold; display: inline-block;">
-            Verifikasi Email Saya ✨
+            Verifikasi Email Saya
           </a>
         </div>
         <p style="color: #64748B; font-size: 14px;">
@@ -78,7 +78,7 @@ export async function sendVerificationEmail(to: string, token: string, appUrl: s
           <a href="${verifyLink}" style="color: #0EA5E9;">${verifyLink}</a>
         </p>
         <p style="color: #94A3B8; font-size: 12px; margin-top: 24px;">
-          Tautan ini berlaku selama 24 jam. Jika kamu tidak merasa mendaftar di GrowthWithSero, abaikan email ini ya.
+          Tautan ini berlaku selama 24 jam. Jika kamu tidak merasa mendaftar di DailyOfSero, abaikan email ini ya.
         </p>
       </div>
     `,
@@ -92,16 +92,16 @@ export async function sendPasswordResetEmail(to: string, token: string, appUrl: 
   const resetLink = `${appUrl}/reset-password?token=${token}`;
   return sendEmail({
     to,
-    subject: "🔑 Permintaan Reset Password — GrowthWithSero",
+    subject: "Permintaan Reset Password — DailyOfSero",
     html: `
       <div style="font-family: 'Montserrat', sans-serif; max-width: 600px; margin: auto; padding: 24px; background: #F8FAFC; border-radius: 16px;">
-        <h2 style="color: #9333EA;">Reset Password Akun 🔒</h2>
+        <h2 style="color: #9333EA;">Reset Password Akun</h2>
         <p style="color: #334155; font-size: 16px; line-height: 1.6;">
-          Kami menerima permintaan untuk mengatur ulang kata sandi akunmu di <strong>GrowthWithSero</strong>.
+          Kami menerima permintaan untuk mengatur ulang kata sandi akunmu di <strong>DailyOfSero</strong>.
         </p>
         <div style="text-align: center; margin: 32px 0;">
           <a href="${resetLink}" style="background: #A855F7; color: white; padding: 14px 28px; border-radius: 9999px; text-decoration: none; font-weight: bold; display: inline-block;">
-            Buat Password Baru ✨
+            Buat Password Baru
           </a>
         </div>
         <p style="color: #64748B; font-size: 14px;">
@@ -122,7 +122,7 @@ export async function sendPasswordResetEmail(to: string, token: string, appUrl: 
 export async function sendTakedownEmail(to: string, karyaTitle: string, reason?: string) {
   return sendEmail({
     to,
-    subject: `⚠️ Pemberitahuan Takedown Karya: "${karyaTitle}"`,
+    subject: `Pemberitahuan Takedown Karya: "${karyaTitle}"`,
     html: `
       <div style="font-family: 'Montserrat', sans-serif; max-width: 600px; margin: auto; padding: 24px; background: #FFF1F2; border-radius: 16px; border: 1px solid #FECDD3;">
         <h2 style="color: #E11D48;">Pemberitahuan Takedown Karya</h2>

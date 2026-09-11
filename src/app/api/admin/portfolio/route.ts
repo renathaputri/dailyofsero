@@ -22,7 +22,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Profil mini portfoliomu berhasil diperbarui! ✨",
+      message: "Profil mini portfoliomu berhasil diperbarui!",
       admin: {
         id: updated.id,
         name: updated.name,

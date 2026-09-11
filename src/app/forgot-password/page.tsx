@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
             <KeyRound className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            Lupa Kata Sandi? 🔑
+            Lupa Kata Sandi?
           </h1>
           <p className="text-xs sm:text-sm text-slate-500">
             Masukkan email terdaftarmu. Kami akan mengirimkan tautan untuk membuat kata sandi baru.
@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
               disabled={loading}
               className="w-full py-3.5 px-4 rounded-2xl bg-sero-purple-600 hover:bg-sero-purple-700 text-white font-bold text-sm shadow-md shadow-sero-purple-200 transition-all flex items-center justify-center gap-2"
             >
-              {loading ? <span>Mengirim Tautan...</span> : <span>Kirim Link Reset ✉️</span>}
+              {loading ? <span>Mengirim Tautan...</span> : <span>Kirim Link Reset</span>}
             </button>
 
             <div className="pt-4 text-center">

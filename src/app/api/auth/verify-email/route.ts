@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Email kamu berhasil diverifikasi! Sekarang kamu sudah bisa login 🎉",
+      message: "Email kamu berhasil diverifikasi! Sekarang kamu sudah bisa login.",
     });
   } catch (error) {
     console.error("Email verify error:", error);

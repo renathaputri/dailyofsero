@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Tautan reset password sudah dikirimkan ke email kamu! 🔑",
+      message: "Tautan reset password sudah dikirimkan ke email kamu.",
       resetLinkPreview: `${appUrl}/reset-password?token=${token}`,
     });
   } catch (error) {

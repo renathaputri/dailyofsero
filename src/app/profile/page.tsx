@@ -73,7 +73,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-8 space-y-2">
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Akun Saya 🌱</h1>
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Akun Saya</h1>
         <p className="text-sm text-slate-500">Kelola akun dan preferensi privasi kamu</p>
       </div>
 
@@ -86,7 +86,7 @@ export default function ProfilePage() {
             </div>
             <div>
               <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sero-blue-100 text-sero-blue-700">
-                Pengunjung Terverifikasi ✨
+                Pengunjung Terverifikasi
               </span>
               <h2 className="text-lg font-bold text-slate-900 mt-1">{user?.email}</h2>
               <p className="text-xs text-slate-400">

@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       data: allAdmins.map((admin) => ({
         adminId: admin.id,
         type: "EVENT_PUBLISHED",
-        message: `📢 Event baru telah dipublikasikan: "${newEvent.title}"!`,
+        message: `Event baru telah dipublikasikan: "${newEvent.title}".`,
       })),
     });
 

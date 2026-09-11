@@ -27,9 +27,9 @@ export default function AwareMindPage() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
-      <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
+      <div className="text-center max-w-2xl mx-auto mb-10 space-y-3">
         <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-100 text-rose-700 text-xs font-bold uppercase tracking-wider">
           <HeartHandshake className="w-4 h-4" /> Kolaborasi & Konseling Resmi
         </div>
@@ -37,7 +37,7 @@ export default function AwareMindPage() {
           Layanan Konseling AwareMind
         </h1>
         <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-          GrowthWithSero bermitra resmi dengan <strong>AwareMind</strong> untuk menghubungkanmu dengan psikolog dan konselor profesional berlisensi.
+          DailyOfSero bermitra resmi dengan <strong>AwareMind</strong> untuk menghubungkanmu dengan psikolog dan konselor profesional berlisensi.
         </p>
       </div>
 

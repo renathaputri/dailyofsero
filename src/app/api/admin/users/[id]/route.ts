@@ -38,7 +38,7 @@ export async function PUT(
         data: {
           adminId: updated.id,
           type: "PASSWORD_RESET",
-          message: "🔒 Kata sandi akun admin kamu telah diatur ulang oleh Superadmin.",
+          message: "Kata sandi akun admin kamu telah diatur ulang oleh Superadmin.",
         },
       });
     }

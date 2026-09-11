@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, Sparkles, BookOpen, ArrowRight, ShieldCheck, Heart } from "lucide-react";
+import { Users, Sparkles, BookOpen, ArrowRight, ShieldCheck, Heart, Crown, Star } from "lucide-react";
 
 interface TeamMember {
   id: string;
@@ -92,7 +92,7 @@ export default function TeamPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
         <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sero-blue-100 text-sero-blue-700 text-xs font-bold uppercase tracking-wider">
@@ -118,7 +118,7 @@ export default function TeamPage() {
           {mindCaptains.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-indigo-100">
-                <span className="text-xl">👑</span>
+                <Crown className="w-5 h-5 text-indigo-600" />
                 <h2 className="text-xl font-bold text-slate-900">Mind Captain</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -131,7 +131,7 @@ export default function TeamPage() {
           {coCaptains.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-purple-100">
-                <span className="text-xl">🌟</span>
+                <Star className="w-5 h-5 text-purple-600 fill-purple-100" />
                 <h2 className="text-xl font-bold text-slate-900">Co-Captain</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -144,7 +144,7 @@ export default function TeamPage() {
           {brandAmbassadors.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-sky-100">
-                <span className="text-xl">🌱</span>
+                <Sparkles className="w-5 h-5 text-sky-600" />
                 <h2 className="text-xl font-bold text-slate-900">Brand Ambassador (BA)</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

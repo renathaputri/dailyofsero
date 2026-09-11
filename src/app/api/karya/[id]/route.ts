@@ -86,12 +86,12 @@ export async function DELETE(
         data: {
           adminId: karya.ownerId,
           type: "KARYA_TAKEDOWN",
-          message: `⚠️ Karya kamu "${karya.title}" telah di-takedown oleh Superadmin.${reason ? ` Alasan: ${reason}` : ""}`,
+          message: `Karya kamu "${karya.title}" telah di-takedown oleh Superadmin.${reason ? ` Alasan: ${reason}` : ""}`,
         },
       });
 
       // Send email notification to BA
-      const targetEmail = `${karya.owner.username}@growthwithsero.internal`;
+      const targetEmail = `${karya.owner.username}@dailyofsero.internal`;
       await sendTakedownEmail(targetEmail, karya.title, reason);
     }
 

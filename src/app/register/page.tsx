@@ -57,7 +57,7 @@ export default function RegisterPage() {
             <Sparkles className="w-6 h-6" />
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            Mulai Perjalananmu 🌱
+            Mulai Perjalananmu
           </h1>
           <p className="text-sm text-slate-500">
             Daftar akun gratis untuk mulai menulis jurnal terenkripsi dan merawat kesehatan mentalmu.
@@ -70,7 +70,7 @@ export default function RegisterPage() {
               <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center shadow-inner">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h2 className="text-xl font-bold text-slate-900">Cek Inbox Email Kamu! ✉️</h2>
+              <h2 className="text-xl font-bold text-slate-900">Cek Inbox Email Kamu!</h2>
               <p className="text-sm text-slate-600 leading-relaxed">
                 {successInfo.message}
               </p>
@@ -183,7 +183,7 @@ export default function RegisterPage() {
                   <span>Mendaftarkan Akun...</span>
                 ) : (
                   <>
-                    <span>Daftar Sekarang ✨</span>
+                    <span>Daftar Sekarang</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

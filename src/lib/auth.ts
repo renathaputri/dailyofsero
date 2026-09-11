@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "growthwithsero-super-secure-jwt-session-secret-key-2026"
+  process.env.JWT_SECRET || "dailyofsero-super-secure-jwt-session-secret-key-2026"
 );
 
 export const COOKIE_NAME = "sero_session";

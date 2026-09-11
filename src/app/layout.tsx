@@ -13,9 +13,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "GrowthWithSero — Mental Health & Community Platform",
+  title: "DailyOfSero — Mental Health & Community Platform",
   description: "Platform safe space kesehatan mental untuk bertumbuh, refleksi diri melalui jurnal terenkripsi, galeri karya Brand Ambassador, dan akses konseling resmi AwareMind.",
-  keywords: ["mental health", "growth with sero", "tim serotonin", "self-care", "mindful journaling", "awaremind"],
+  keywords: ["mental health", "daily of sero", "dailyofsero", "tim serotonin", "self-care", "mindful journaling", "awaremind"],
 };
 
 export default function RootLayout({
@@ -34,7 +34,7 @@ export default function RootLayout({
         </div>
 
         <Navbar />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow w-full max-w-[1600px] mx-auto">{children}</main>
         <Footer />
         <EmergencyButton />
       </body>

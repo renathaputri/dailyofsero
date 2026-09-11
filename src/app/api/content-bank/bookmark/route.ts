@@ -74,7 +74,7 @@ export async function POST(req: Request) {
           contentBankId,
         },
       });
-      return NextResponse.json({ success: true, bookmarked: true, message: "Tersimpan ke bookmark kamu! ✨" });
+      return NextResponse.json({ success: true, bookmarked: true, message: "Tersimpan ke bookmark kamu!" });
     }
   } catch (error) {
     console.error("Toggle bookmark error:", error);

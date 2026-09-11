@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Akun berhasil dibuat! Link verifikasi sudah kami kirimkan ke email kamu ✨",
+      message: "Akun berhasil dibuat! Link verifikasi sudah kami kirimkan ke email kamu.",
       verificationLinkPreview: `${appUrl}/verify-email?token=${token}`, // Dev friendly preview
     });
   } catch (error) {

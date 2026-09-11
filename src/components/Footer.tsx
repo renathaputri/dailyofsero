@@ -10,25 +10,23 @@ export default function Footer() {
       <div className="blob-shape bg-sero-purple-200/40 w-96 h-96 -bottom-32 -left-32" />
       <div className="blob-shape bg-sero-blue-200/40 w-96 h-96 -bottom-32 -right-32" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sero-blue-400 to-sero-purple-500 flex items-center justify-center text-white">
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sero-blue-500 to-sero-purple-600 flex items-center justify-center text-white shadow-sm">
                 <Sparkles className="w-4 h-4" />
               </div>
-              <span className="font-extrabold text-lg text-slate-800 tracking-tight">
-                GrowthWithSero
+              <span className="font-extrabold text-lg text-slate-900 tracking-tight">
+                DailyOfSero
               </span>
             </div>
             <p className="text-sm text-slate-600 max-w-md leading-relaxed">
-              Ruang bertumbuh dan berefleksi yang aman untukmu. Dibangun dengan cinta dan kepedulian oleh <strong>Tim Serotonin</strong> sebagai safe space kesehatan mental generasi muda.
+              Ruang bertumbuh dan berefleksi yang aman untukmu. Dikembangkan dengan cinta dan kepedulian oleh <strong>Tim Serotonin</strong> sebagai safe space kesehatan mental generasi muda.
             </p>
             <div className="pt-2 text-xs text-slate-500 flex items-center gap-1.5">
-              <span>Dibuat dengan</span>
-              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
-              <span>oleh Mahasiswa Tim Serotonin (Capstone Project 2026)</span>
+              <span>Dibuat dengan dedikasi oleh Tim Serotonin</span>
             </div>
           </div>
 
@@ -43,7 +41,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="/healing" className="hover:text-sero-purple-600 transition-colors">
-                  Healing Corner & Jurnal
+                  Healing Corner (Member)
                 </a>
               </li>
               <li>
@@ -53,7 +51,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="/team" className="hover:text-sero-purple-600 transition-colors">
-                  Our Team (Portfolio BA)
+                  Our Team
                 </a>
               </li>
               <li>
@@ -91,17 +89,17 @@ export default function Footer() {
               </li>
               <li>
                 <a href="/login" className="hover:text-slate-800 text-xs text-slate-400 block pt-2">
-                  Portal Masuk Admin / BA
+                  Portal Masuk Akun
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© 2026 GrowthWithSero — Tim Serotonin. All rights reserved.</p>
+        <div className="pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
+          <p>© 2026 DailyOfSero — Tim Serotonin. Hak Cipta Dilindungi.</p>
           <p className="text-center sm:text-right">
-            Jurnal pribadimu terenkripsi end-to-end (AES-256) & tidak dapat diakses siapapun.
+            Jurnal pribadimu terenkripsi end-to-end (AES-256) dan tidak dapat diakses siapapun.
           </p>
         </div>
       </div>

@@ -355,7 +355,7 @@ export default function AdminKaryaPage() {
                   disabled={submitting}
                   className="px-6 py-2.5 rounded-xl bg-sero-purple-600 hover:bg-sero-purple-700 text-white text-xs font-bold shadow-sm disabled:opacity-50"
                 >
-                  {submitting ? "Menyimpan..." : editId ? "Perbarui Karya" : "Terbitkan Langsung ✨"}
+                  {submitting ? "Menyimpan..." : editId ? "Perbarui Karya" : "Terbitkan Langsung"}
                 </button>
               </div>
             </form>

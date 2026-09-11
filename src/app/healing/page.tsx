@@ -1,26 +1,56 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sparkles, Heart, Wind, Star, Flame, Lock, Trash2, Bookmark, BookmarkCheck, ArrowRight, Play, Pause, RotateCcw, AlertCircle, CheckCircle2, ChevronRight, PenLine, Smile, Frown, Moon, CloudRain, HelpCircle } from "lucide-react";
+import { 
+  Heart, 
+  Wind, 
+  Star, 
+  Flame, 
+  Lock, 
+  Trash2, 
+  Bookmark, 
+  BookmarkCheck, 
+  ArrowRight, 
+  Play, 
+  Pause, 
+  RotateCcw, 
+  AlertCircle, 
+  CheckCircle2, 
+  PenLine, 
+  Smile, 
+  Frown, 
+  Moon, 
+  CloudRain, 
+  HelpCircle,
+  ShieldCheck,
+  Compass,
+  ArrowLeft,
+  Sparkles,
+  ShieldAlert,
+  Calendar,
+  LogIn,
+  UserPlus
+} from "lucide-react";
 
+// 7 Moods with Lucide icons (NO EMOJIS)
 const MOODS = [
-  { id: "SENANG", label: "Senang", emoji: "😊" },
-  { id: "SEDIH", label: "Sedih", emoji: "🥺" },
-  { id: "CEMAS", label: "Cemas", emoji: "😰" },
-  { id: "MARAH", label: "Marah", emoji: "😤" },
-  { id: "LELAH", label: "Lelah", emoji: "🥱" },
-  { id: "TENANG", label: "Tenang", emoji: "😌" },
-  { id: "BINGUNG", label: "Bingung", emoji: "😵‍💫" },
+  { id: "SENANG", label: "Senang", icon: Smile, color: "text-amber-500 bg-amber-50 border-amber-200" },
+  { id: "SEDIH", label: "Sedih", icon: Frown, color: "text-blue-500 bg-blue-50 border-blue-200" },
+  { id: "CEMAS", label: "Cemas", icon: AlertCircle, color: "text-teal-500 bg-teal-50 border-teal-200" },
+  { id: "MARAH", label: "Marah", icon: Flame, color: "text-rose-500 bg-rose-50 border-rose-200" },
+  { id: "LELAH", label: "Lelah", icon: Moon, color: "text-purple-500 bg-purple-50 border-purple-200" },
+  { id: "TENANG", label: "Tenang", icon: CloudRain, color: "text-sky-500 bg-sky-50 border-sky-200" },
+  { id: "BINGUNG", label: "Bingung", icon: HelpCircle, color: "text-fuchsia-500 bg-fuchsia-50 border-fuchsia-200" },
 ];
 
 const MOOD_MESSAGES: Record<string, string> = {
-  SENANG: "Nikmati setiap detik kebahagiaan ini, rayakan pencapaian kecilmu hari ini! Kamu sangat layak berbahagia. ✨",
-  SEDIH: "Gak apa-apa untuk gak baik-baik saja hari ini. Izinkan hatimu beristirahat, esok adalah lembaran baru. 💙",
-  CEMAS: "Kekhawatiran hari ini belum tentu terjadi esok hari. Tarik nafas perlahan, saat ini kamu aman. 🌿",
-  MARAH: "Rasa marahmu valid, tapi jangan biarkan ia merusak kedamaianmu. Hembuskan amarah itu perlahan bagai angin lalu. 🌊",
-  LELAH: "Tubuh dan jiwamu sudah berjuang sangat hebat hari ini. Istirahatlah sejenak, kamu gak harus menyelesaikan segalanya sekarang. 🌙",
-  TENANG: "Simpan rasa damai ini di lubuk hatimu. Biarkan ketenangan ini menjadi jangkar pelindungmu setiap hari. ☁️",
-  BINGUNG: "Semuanya terasa overload ya? Gak perlu buru-buru mencari semua jawaban. Fokus saja pada satu langkah terkecil berikutnya. 🧩",
+  SENANG: "Nikmati setiap detik kebahagiaan ini dan rayakan pencapaian kecilmu hari ini. Kamu layak berbahagia.",
+  SEDIH: "Tidak apa-apa untuk merasa tidak baik-baik saja hari ini. Izinkan hatimu beristirahat, esok adalah lembaran baru.",
+  CEMAS: "Kekhawatiran hari ini belum tentu terjadi esok hari. Tarik nafas perlahan, saat ini kamu berada di tempat yang aman.",
+  MARAH: "Rasa marahmu valid, namun jangan biarkan kemarahan mengikis kedamaian batinmu. Hembuskan amarah perlahan.",
+  LELAH: "Tubuh dan jiwamu sudah berjuang sangat hebat. Istirahatlah sejenak, kamu tidak harus menyelesaikan segalanya hari ini.",
+  TENANG: "Simpan rasa damai ini di lubuk hatimu. Biarkan ketenangan ini menjadi pelindung batinmu sepanjang hari.",
+  BINGUNG: "Pikiran terasa penuh? Tidak perlu mencari seluruh jawaban sekaligus. Ambil satu langkah kecil berikutnya.",
 };
 
 interface JournalEntry {
@@ -43,11 +73,14 @@ interface CalmingSentence {
   author: string;
 }
 
-export default function HealingPage() {
-  const [activeTab, setActiveTab] = useState<"JOURNAL" | "BREATHING" | "BOOKMARKS">("JOURNAL");
-  const [user, setUser] = useState<{ id: string; type: string } | null>(null);
+type TabType = "OVERVIEW" | "JOURNAL" | "MOOD" | "BREATHING" | "BOOKMARKS" | "PROMPTS";
 
-  // Mood-Star state (ephemeral, not saved to DB)
+export default function HealingPage() {
+  const [activeTab, setActiveTab] = useState<TabType>("OVERVIEW");
+  const [user, setUser] = useState<{ id: string; name?: string; username?: string; email?: string } | null>(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
+
+  // Mood state
   const [selectedMood, setSelectedMood] = useState<string>("TENANG");
   const [starRating, setStarRating] = useState<number>(5);
 
@@ -58,14 +91,12 @@ export default function HealingPage() {
   const [submittingJournal, setSubmittingJournal] = useState(false);
   const [journalAlert, setJournalAlert] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Guided Prompts
+  // Prompts & Calming
   const [prompts, setPrompts] = useState<GuidedPrompt[]>([]);
-
-  // Calming Sentences & Bookmarks
   const [calmingSentences, setCalmingSentences] = useState<CalmingSentence[]>([]);
   const [bookmarks, setBookmarks] = useState<any[]>([]);
 
-  // Breathing timer state (Inhale 4s -> Hold 4s -> Exhale 4s)
+  // Breathing Box Timer (4s - 4s - 4s)
   const [breathingPhase, setBreathingPhase] = useState<"Tarik Napas" | "Tahan" | "Hembuskan">("Tarik Napas");
   const [breathingCountdown, setBreathingCountdown] = useState(4);
   const [breathingActive, setBreathingActive] = useState(false);
@@ -73,15 +104,18 @@ export default function HealingPage() {
   useEffect(() => {
     // 1. Fetch user session
     fetch("/api/auth/me")
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.user?.type === "USER") {
           setUser(data.user);
           loadJournalEntries();
           loadBookmarks();
+        } else {
+          setUser(null);
         }
       })
-      .catch(() => {});
+      .catch(() => setUser(null))
+      .finally(() => setLoadingAuth(false));
 
     // 2. Fetch Guided Prompts
     fetch("/api/content-bank?type=GUIDED_PROMPT")
@@ -146,7 +180,7 @@ export default function HealingPage() {
       setJournalContent("");
       setJournalAlert({
         type: "success",
-        text: "Jurnalmu berhasil tersimpan dan terenkripsi aman! 🔒 Streak journaling bertambah ✨",
+        text: "Jurnalmu berhasil tersimpan dan terenkripsi aman dengan AES-256. Streak journaling bertambah!",
       });
       loadJournalEntries();
     } catch (err) {
@@ -170,11 +204,6 @@ export default function HealingPage() {
   };
 
   const handleToggleBookmark = async (contentBankId: string) => {
-    if (!user) {
-      alert("Silakan login terlebih dahulu untuk menyimpan bookmark ya!");
-      return;
-    }
-
     try {
       const res = await fetch("/api/content-bank/bookmark", {
         method: "POST",
@@ -184,7 +213,6 @@ export default function HealingPage() {
       const data = await res.json();
       if (res.ok) {
         loadBookmarks();
-        // Update local calming list state
         setCalmingSentences((prev) =>
           prev.map((c) => (c.id === contentBankId ? { ...c, isBookmarked: data.bookmarked } : c))
         );
@@ -194,7 +222,7 @@ export default function HealingPage() {
     }
   };
 
-  // Breathing Box Timer logic (4s - 4s - 4s)
+  // Breathing Box Timer logic
   useEffect(() => {
     if (!breathingActive) return;
 
@@ -202,7 +230,6 @@ export default function HealingPage() {
       setBreathingCountdown((prev) => {
         if (prev > 1) return prev - 1;
 
-        // Transition phase
         if (breathingPhase === "Tarik Napas") {
           setBreathingPhase("Tahan");
           return 4;
@@ -219,447 +246,783 @@ export default function HealingPage() {
     return () => clearInterval(interval);
   }, [breathingActive, breathingPhase]);
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto mb-10 space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sero-purple-100 text-sero-purple-700 text-xs font-bold uppercase tracking-wider">
-          <Heart className="w-3.5 h-3.5 fill-sero-purple-700" /> Safe Space & Self-Care
+  // Loading state
+  if (loadingAuth) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4">
+        <div className="w-12 h-12 rounded-2xl bg-sero-purple-100 border border-sero-purple-200 flex items-center justify-center animate-pulse">
+          <Heart className="w-6 h-6 text-sero-purple-600" />
         </div>
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-          Healing Corner
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-          Ruang hening untuk mengekspresikan perasaan tanpa dihakimi, mengatur ritme nafas, dan mencatat perjalanan pertumbuhan dirimu.
-        </p>
+        <p className="text-sm font-semibold text-slate-500">Memeriksa autentikasi ruang aman...</p>
       </div>
+    );
+  }
 
-      {/* Mood-Star Check-in Card (PRD 3.6 - Ephemeral, instant soothing) */}
-      <div className="p-6 sm:p-8 rounded-4xl bg-gradient-to-br from-white to-sero-blue-50/50 border border-sero-blue-200/60 shadow-md mb-10">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-          <div>
-            <span className="text-xs font-bold text-sero-blue-600 uppercase tracking-wider flex items-center gap-1.5">
-              <Star className="w-4 h-4 fill-amber-400 text-amber-400" /> Mood-Star Saat Ini
-            </span>
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mt-1">
-              Bagaimana kondisi hatimu di sesi ini?
-            </h3>
+  // ACCESS RESTRICTED: Public user is NOT logged in
+  if (!user) {
+    return (
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-12">
+        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-slate-200 shadow-xl text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sero-purple-500 to-indigo-600 text-white mx-auto flex items-center justify-center shadow-lg shadow-sero-purple-200">
+            <Lock className="w-8 h-8" />
           </div>
 
-          {/* Star selector */}
-          <div className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
-            {[1, 2, 3, 4, 5].map((s) => (
-              <button
-                key={s}
-                onClick={() => setStarRating(s)}
-                className="p-1 hover:scale-125 transition-transform text-amber-400"
-              >
-                <Star
-                  className={`w-5 h-5 ${s <= starRating ? "fill-amber-400 text-amber-400" : "text-slate-300"}`}
-                />
-              </button>
-            ))}
+          <div className="max-w-xl mx-auto space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sero-purple-50 border border-sero-purple-200 text-sero-purple-700 text-xs font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-3.5 h-3.5" /> Ruang Privat Terenkripsi
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              Healing Corner Hanya Dapat Diakses Setelah Masuk Akun
+            </h1>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Demi menjaga kerahasiaan dan privasi batinmu, seluruh fitur jurnal dienkripsi dengan standar <strong>AES-256</strong> yang terikat langsung ke akun pribadimu. Bahkan pengelola server tidak dapat membaca catatanmu.
+            </p>
+          </div>
+
+          {/* Feature Highlights Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto pt-2">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-sero-purple-100 text-sero-purple-700">
+                <PenLine className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-xs font-bold text-slate-900">Jurnal Pribadi AES-256</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Tulis perasaan tanpa rasa takut, tersimpan aman dan terenkripsi.</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-amber-100 text-amber-700">
+                <Flame className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-xs font-bold text-slate-900">Pelacak Streak Refleksi</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Pantau konsistensi journaling harian untuk kesehatan mentalmu.</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-sky-100 text-sky-700">
+                <Wind className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-xs font-bold text-slate-900">Box Breathing 4-4-4</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Latihan pernapasan terpandu untuk merilekskan sistem saraf.</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-emerald-100 text-emerald-700">
+                <Bookmark className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-xs font-bold text-slate-900">Koleksi Kalimat Favorit</h2>
+                <p className="text-xs text-slate-500 mt-0.5">Simpan kalimat motivasi dan ketenangan favoritmu kapan saja.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+            <a
+              href="/login?redirect=/healing"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-sero-purple-600 to-indigo-600 hover:from-sero-purple-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Masuk ke Akun Saya</span>
+            </a>
+            <a
+              href="/register"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm flex items-center justify-center gap-2 transition-all"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Daftar Akun Gratis</span>
+            </a>
           </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* 7 Mood buttons */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-          {MOODS.map((m) => (
+  // ACCESS GRANTED: User is logged in, show Wide Layout with Sidebar
+  return (
+    <div className="w-full max-w-[1500px] mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6">
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* LEFT SIDEBAR */}
+        <aside className="w-full lg:w-72 flex-shrink-0 bg-white border border-slate-200/90 rounded-3xl p-4 shadow-sm lg:sticky lg:top-24 space-y-6">
+          {/* User Profile & Streak Overview */}
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-sero-purple-50 to-indigo-50 border border-sero-purple-100">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sero-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                <Heart className="w-5 h-5" />
+              </div>
+              <div className="overflow-hidden">
+                <h3 className="font-bold text-slate-900 text-sm truncate">
+                  {user.name || user.username || "Teman Sero"}
+                </h3>
+                <span className="text-[11px] text-slate-500 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" /> Member Terverifikasi
+                </span>
+              </div>
+            </div>
+
+            {/* Streak Counter */}
+            <div className="mt-3 pt-3 border-t border-sero-purple-200/50 flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-amber-700">
+                <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span className="text-xs font-bold">{streak.currentStreak} Hari Streak</span>
+              </div>
+              <span className="text-[10px] text-slate-500 font-medium">
+                Rekor: {streak.longestStreak}h
+              </span>
+            </div>
+          </div>
+
+          {/* Sidebar Menu Navigation */}
+          <div className="space-y-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 block mb-1">
+              Menu Healing Corner
+            </span>
+
             <button
-              key={m.id}
-              onClick={() => setSelectedMood(m.id)}
-              className={`p-3 rounded-2xl border text-center transition-all ${
-                selectedMood === m.id
-                  ? "bg-slate-900 text-white border-slate-900 shadow-sm scale-105"
-                  : "bg-white/80 hover:bg-white text-slate-700 border-slate-200"
+              onClick={() => setActiveTab("OVERVIEW")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "OVERVIEW"
+                  ? "bg-sero-purple-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100"
               }`}
             >
-              <span className="text-xl block mb-1">{m.emoji}</span>
-              <span className="text-xs font-semibold">{m.label}</span>
+              <Compass className="w-4 h-4" />
+              <span>Ringkasan Harian</span>
             </button>
-          ))}
-        </div>
 
-        {/* Dynamic Soothing Sentence */}
-        <div className="mt-4 p-4 rounded-2xl bg-white/90 border border-sero-blue-100 text-slate-800 text-sm leading-relaxed flex items-start gap-3 shadow-sm">
-          <Sparkles className="w-5 h-5 text-sero-purple-500 flex-shrink-0 mt-0.5" />
-          <p className="font-medium italic">{MOOD_MESSAGES[selectedMood]}</p>
-        </div>
-      </div>
+            <button
+              onClick={() => setActiveTab("JOURNAL")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "JOURNAL"
+                  ? "bg-sero-purple-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <PenLine className="w-4 h-4" />
+              <span>Jurnal Pribadi (AES-256)</span>
+            </button>
 
-      {/* Tabs Switcher: Journal, Breathing, Bookmarks */}
-      <div className="flex items-center justify-center gap-2 mb-8">
-        <button
-          onClick={() => setActiveTab("JOURNAL")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all ${
-            activeTab === "JOURNAL"
-              ? "bg-slate-900 text-white shadow-md"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-          }`}
-        >
-          <PenLine className="w-4 h-4" />
-          <span>Self-Journal & Streak</span>
-        </button>
+            <button
+              onClick={() => setActiveTab("MOOD")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "MOOD"
+                  ? "bg-sero-purple-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <Smile className="w-4 h-4" />
+              <span>Check-in Mood Harian</span>
+            </button>
 
-        <button
-          onClick={() => setActiveTab("BREATHING")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all ${
-            activeTab === "BREATHING"
-              ? "bg-slate-900 text-white shadow-md"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-          }`}
-        >
-          <Wind className="w-4 h-4" />
-          <span>Latihan Pernapasan</span>
-        </button>
+            <button
+              onClick={() => setActiveTab("BREATHING")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "BREATHING"
+                  ? "bg-sero-purple-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <Wind className="w-4 h-4" />
+              <span>Latihan Pernapasan (4-4-4)</span>
+            </button>
 
-        <button
-          onClick={() => setActiveTab("BOOKMARKS")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all ${
-            activeTab === "BOOKMARKS"
-              ? "bg-slate-900 text-white shadow-md"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-          }`}
-        >
-          <Bookmark className="w-4 h-4" />
-          <span>Kalimat Favorit</span>
-        </button>
-      </div>
+            <button
+              onClick={() => setActiveTab("BOOKMARKS")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "BOOKMARKS"
+                  ? "bg-sero-purple-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <Bookmark className="w-4 h-4" />
+              <span>Kalimat Favorit ({bookmarks.length})</span>
+            </button>
 
-      {/* TAB 1: SELF-JOURNAL & STREAK */}
-      {activeTab === "JOURNAL" && (
-        <div className="space-y-8 animate-in fade-in">
-          {/* User Streak Bar (PRD 3.6) */}
-          {user && (
-            <div className="p-5 rounded-3xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-amber-400 text-white flex items-center justify-center font-black shadow-md shadow-amber-200">
-                  <Flame className="w-7 h-7 fill-white animate-pulse" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
-                    {streak.currentStreak} Hari Streak Journaling! 🔥
-                  </h3>
-                  <p className="text-xs text-slate-600">
-                    Rekor terpanjang kamu: <strong>{streak.longestStreak} hari</strong> berturut-turut.
+            <button
+              onClick={() => setActiveTab("PROMPTS")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                activeTab === "PROMPTS"
+                  ? "bg-sero-purple-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span>Inspirasi Guided Prompt</span>
+            </button>
+          </div>
+
+          {/* Quick Support & Back link */}
+          <div className="pt-4 border-t border-slate-100 space-y-2">
+            <a
+              href="/awaremind"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-700 text-xs font-semibold hover:bg-rose-100 transition-colors"
+            >
+              <span className="flex items-center gap-1.5">
+                <ShieldAlert className="w-4 h-4 text-rose-500" /> Bantuan Konselor
+              </span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+
+            <a
+              href="/"
+              className="w-full flex items-center gap-2 p-2.5 rounded-xl text-slate-500 hover:text-slate-800 text-xs font-medium hover:bg-slate-100 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Kembali ke Beranda</span>
+            </a>
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT AREA */}
+        <main className="flex-1 w-full min-w-0">
+          {/* TAB 1: OVERVIEW */}
+          {activeTab === "OVERVIEW" && (
+            <div className="space-y-6">
+              {/* Top Banner */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-sero-purple-600 via-indigo-600 to-indigo-700 text-white shadow-md relative overflow-hidden">
+                <div className="relative z-10 max-w-xl space-y-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-sero-purple-200 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4" /> Ruang Aman Pribadimu
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-black">
+                    Halo, {user.name || user.username || "Sahabat Sero"}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-purple-100 leading-relaxed">
+                    Setiap emosi yang hadir hari ini berharga. Ambil jeda sejenak untuk bernafas, mencatat isi pikiranmu, dan memulihkan energi batin.
                   </p>
                 </div>
               </div>
-              <div className="text-xs font-semibold px-3 py-1.5 rounded-full bg-white/90 text-amber-800 border border-amber-200 shadow-sm">
-                Tulis minimal 1x sehari untuk jaga streak 🌱
+
+              {/* Quick Actions Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button
+                  onClick={() => setActiveTab("JOURNAL")}
+                  className="p-5 rounded-2xl bg-white border border-slate-200 text-left hover:border-sero-purple-300 hover:shadow-md transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-sero-purple-100 text-sero-purple-700 flex items-center justify-center mb-3">
+                    <PenLine className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-sm group-hover:text-sero-purple-700 transition-colors">
+                    Tulis Jurnal Hari Ini
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Enkripsi AES-256 aktif. Jaga streak journaling-mu!
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("BREATHING")}
+                  className="p-5 rounded-2xl bg-white border border-slate-200 text-left hover:border-sky-300 hover:shadow-md transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center mb-3">
+                    <Wind className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-sm group-hover:text-sky-700 transition-colors">
+                    Latihan Napas Kotak
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    4 detik tarik, 4 detik tahan, 4 detik hembuskan.
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("MOOD")}
+                  className="p-5 rounded-2xl bg-white border border-slate-200 text-left hover:border-amber-300 hover:shadow-md transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-3">
+                    <Smile className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-sm group-hover:text-amber-700 transition-colors">
+                    Check-in Mood Harian
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Kenali dan peluk suasana hatimu di sesi ini.
+                  </p>
+                </button>
+              </div>
+
+              {/* Recent Journal & Quote */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-emerald-600" /> Jurnal Terakhir Kamu
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab("JOURNAL")}
+                      className="text-xs font-bold text-sero-purple-600 hover:underline"
+                    >
+                      Buka Semua →
+                    </button>
+                  </div>
+
+                  {entries.length === 0 ? (
+                    <div className="p-6 rounded-2xl bg-slate-50 text-center text-xs text-slate-500">
+                      Belum ada catatan jurnal. Tulis refleksi pertamamu hari ini!
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                      <span className="text-[11px] font-bold text-sero-purple-600">
+                        {new Date(entries[0].createdAt).toLocaleString("id-ID", {
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })}
+                      </span>
+                      <p className="text-xs text-slate-700 line-clamp-3 leading-relaxed">
+                        {entries[0].content}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Calming Insight */}
+                <div className="p-6 rounded-3xl bg-gradient-to-br from-sero-purple-50/80 to-white border border-sero-purple-200 shadow-sm flex flex-col justify-between">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-sero-purple-700 flex items-center gap-1.5 mb-3">
+                      <Sparkles className="w-4 h-4" /> Ketenangan Hari Ini
+                    </span>
+                    <p className="text-sm font-medium text-slate-800 italic leading-relaxed">
+                      "{MOOD_MESSAGES[selectedMood]}"
+                    </p>
+                  </div>
+                  <div className="pt-4 flex items-center justify-between text-xs text-slate-500">
+                    <span>Mood sesi ini: {selectedMood}</span>
+                    <button
+                      onClick={() => setActiveTab("MOOD")}
+                      className="font-bold text-sero-purple-700 hover:underline"
+                    >
+                      Ubah Mood
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Guided Prompt Suggester */}
-          {prompts.length > 0 && (
-            <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm">
-              <span className="text-xs font-bold text-sero-purple-600 uppercase tracking-wider block mb-2">
-                💡 Butuh Ide Tulisan? Coba Guided Prompt Ini:
-              </span>
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-                {prompts.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setJournalContent(p.content + "\n\n")}
-                    className="whitespace-nowrap px-4 py-2 rounded-2xl bg-slate-50 hover:bg-sero-purple-50 text-slate-700 hover:text-sero-purple-700 border border-slate-200 text-xs font-medium transition-colors flex-shrink-0"
+          {/* TAB 2: JOURNAL (AES-256) */}
+          {activeTab === "JOURNAL" && (
+            <div className="space-y-6">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 rounded-xl bg-emerald-100 text-emerald-700">
+                      <Lock className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-bold text-slate-900">
+                        Self-Journal Pribadi Terenkripsi
+                      </h2>
+                      <span className="text-[11px] text-emerald-600 font-semibold">
+                        Standar Enkripsi AES-256 Aktif
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-slate-500">
+                    {new Date().toLocaleDateString("id-ID", { dateStyle: "full" })}
+                  </span>
+                </div>
+
+                {/* Guided Prompt Suggester */}
+                {prompts.length > 0 && (
+                  <div className="pt-1">
+                    <span className="text-xs font-bold text-sero-purple-700 block mb-2">
+                      Inspirasi Prompt Cepat:
+                    </span>
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+                      {prompts.slice(0, 5).map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => setJournalContent(p.content + "\n\n")}
+                          className="whitespace-nowrap px-3.5 py-1.5 rounded-xl bg-slate-50 hover:bg-sero-purple-50 text-slate-700 hover:text-sero-purple-700 border border-slate-200 text-xs font-medium transition-colors flex-shrink-0"
+                        >
+                          "{p.content.slice(0, 40)}..." <span className="font-bold text-sero-purple-600">Pakai</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {journalAlert && (
+                  <div
+                    className={`p-4 rounded-2xl border text-xs flex items-start gap-2.5 ${
+                      journalAlert.type === "success"
+                        ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                        : "bg-rose-50 border-rose-200 text-rose-800"
+                    }`}
                   >
-                    "{p.content.slice(0, 45)}..." <span className="font-bold text-sero-purple-600">Gunakan →</span>
-                  </button>
+                    {journalAlert.type === "success" ? (
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                    )}
+                    <span>{journalAlert.text}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleSaveJournal} className="space-y-4">
+                  <textarea
+                    rows={8}
+                    required
+                    value={journalContent}
+                    onChange={(e) => setJournalContent(e.target.value)}
+                    placeholder="Tuliskan apapun yang ada di benakmu hari ini... Tidak ada penghakiman, tidak ada penilaian. Ruang ini murni milikmu."
+                    className="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sero-purple-400 text-sm leading-relaxed transition-all"
+                  />
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <span className="text-xs text-slate-400">
+                      Tersimpan secara lokal dan dienkripsi di basis data server.
+                    </span>
+                    <button
+                      type="submit"
+                      disabled={submittingJournal || !journalContent.trim()}
+                      className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-sero-purple-600 to-indigo-600 hover:from-sero-purple-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {submittingJournal ? (
+                        <span>Mengenkripsi & Menyimpan...</span>
+                      ) : (
+                        <>
+                          <PenLine className="w-4 h-4" />
+                          <span>Simpan Jurnal</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Past Entries List */}
+              <div className="space-y-4">
+                <h3 className="font-bold text-slate-900 text-base flex items-center justify-between">
+                  <span>Riwayat Jurnal ({entries.length})</span>
+                </h3>
+
+                {entries.length === 0 ? (
+                  <div className="p-8 rounded-3xl bg-white border border-slate-200 text-center text-xs text-slate-400">
+                    Belum ada catatan jurnal. Mulai tulis ceritamu di formulir atas!
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {entries.map((entry) => (
+                      <div
+                        key={entry.id}
+                        className="p-5 rounded-3xl bg-white border border-slate-200 hover:border-sero-purple-200 shadow-sm transition-all flex items-start justify-between gap-4"
+                      >
+                        <div className="space-y-1.5 flex-grow">
+                          <span className="text-[11px] font-bold text-sero-purple-600 flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5" />
+                            {new Date(entry.createdAt).toLocaleString("id-ID", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
+                          </span>
+                          <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+                            {entry.content}
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteJournal(entry.id)}
+                          className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors flex-shrink-0"
+                          title="Hapus entri jurnal ini"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: MOOD CHECK-IN */}
+          {activeTab === "MOOD" && (
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
+              <div className="text-center max-w-xl mx-auto space-y-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold uppercase tracking-wider">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> Check-in Emosi Harian
+                </span>
+                <h2 className="text-2xl font-bold text-slate-900">
+                  Bagaimana Kondisi Hatimu Saat Ini?
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Tidak ada emosi yang salah. Setiap rasa layak untuk didengarkan.
+                </p>
+              </div>
+
+              {/* 7 Mood Selector with Lucide icons (ZERO EMOJIS) */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                {MOODS.map((m) => {
+                  const Icon = m.icon;
+                  const isSelected = selectedMood === m.id;
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => setSelectedMood(m.id)}
+                      className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all duration-200 ${
+                        isSelected
+                          ? "bg-slate-900 text-white border-slate-900 shadow-md scale-105"
+                          : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                      }`}
+                    >
+                      <Icon className={`w-7 h-7 mb-2 ${isSelected ? "text-white" : m.color.split(" ")[0]}`} />
+                      <span className="text-xs font-bold">{m.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Star Rating Scale */}
+              <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-3">
+                <span className="text-xs font-semibold text-slate-600 block">
+                  Tingkat Energi / Ketenangan (Skala 1 - 5):
+                </span>
+                <div className="flex justify-center items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => setStarRating(star)}
+                      className="p-1.5 hover:scale-125 transition-transform"
+                      title={`Beri rating ${star} bintang`}
+                    >
+                      <Star
+                        className={`w-7 h-7 ${
+                          star <= starRating ? "fill-amber-400 text-amber-400" : "text-slate-300"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Dynamic Affirmation */}
+              <div className="p-5 rounded-2xl bg-sero-purple-50 border border-sero-purple-200 text-slate-800 text-sm leading-relaxed flex items-start gap-3">
+                <Sparkles className="w-5 h-5 text-sero-purple-600 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-sero-purple-700 uppercase tracking-wider block">
+                    Pesan Refleksi untuk Emosi {selectedMood}:
+                  </span>
+                  <p className="font-medium italic">{MOOD_MESSAGES[selectedMood]}</p>
+                </div>
+              </div>
+
+              <div className="text-center pt-2">
+                <button
+                  onClick={() => {
+                    setJournalContent(`Hari ini saya merasa ${selectedMood}. ${MOOD_MESSAGES[selectedMood]}\n\n`);
+                    setActiveTab("JOURNAL");
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm transition-all"
+                >
+                  <PenLine className="w-4 h-4" />
+                  <span>Tuangkan Rasa Ini ke Jurnal Pribadi</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: BREATHING EXERCISE */}
+          {activeTab === "BREATHING" && (
+            <div className="p-8 sm:p-14 rounded-3xl bg-white border border-slate-200 shadow-sm text-center space-y-8 max-w-xl mx-auto">
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-bold uppercase tracking-wider">
+                  <Wind className="w-3.5 h-3.5" /> Box Breathing 4-4-4
+                </span>
+                <h2 className="text-2xl font-bold text-slate-900">Atur Napasmu Perlahan</h2>
+                <p className="text-xs text-slate-500">
+                  Latihan pernapasan kotak terbukti secara klinis mengaktifkan sistem saraf parasimpatis dan menurunkan ketegangan.
+                </p>
+              </div>
+
+              {/* Animated Circle */}
+              <div className="relative w-56 h-56 sm:w-64 sm:h-64 mx-auto flex items-center justify-center">
+                <div
+                  className={`absolute inset-0 rounded-full bg-gradient-to-tr from-sky-200 via-indigo-200 to-purple-200 transition-all duration-1000 ${
+                    breathingActive
+                      ? breathingPhase === "Tarik Napas"
+                        ? "scale-110 opacity-100"
+                        : breathingPhase === "Tahan"
+                        ? "scale-110 opacity-90"
+                        : "scale-75 opacity-60"
+                      : "scale-90 opacity-50"
+                  }`}
+                />
+                <div className="relative z-10 space-y-1">
+                  <span className="text-xs font-bold text-slate-600 uppercase tracking-widest block">
+                    {breathingActive ? breathingPhase : "Tekan Mulai"}
+                  </span>
+                  <span className="text-4xl sm:text-5xl font-black text-slate-900">
+                    {breathingActive ? breathingCountdown : "4"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center gap-3 pt-2">
+                <button
+                  onClick={() => setBreathingActive(!breathingActive)}
+                  className="px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2"
+                >
+                  {breathingActive ? (
+                    <>
+                      <Pause className="w-4 h-4" /> Jeda Latihan
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-4 h-4 fill-white" /> Mulai Latihan
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setBreathingActive(false);
+                    setBreathingPhase("Tarik Napas");
+                    setBreathingCountdown(4);
+                  }}
+                  className="p-3.5 rounded-full border border-slate-200 hover:bg-slate-100 text-slate-600 transition-colors"
+                  title="Reset timer pernapasan"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: BOOKMARKS & CALMING SENTENCES */}
+          {activeTab === "BOOKMARKS" && (
+            <div className="space-y-6">
+              {/* User Saved Bookmarks */}
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <BookmarkCheck className="w-5 h-5 text-sero-purple-600" />
+                  Kalimat Favorit Tersimpan ({bookmarks.length})
+                </h3>
+
+                {bookmarks.length === 0 ? (
+                  <p className="text-xs text-slate-400">
+                    Belum ada kalimat yang kamu bookmark. Klik ikon bookmark pada kalimat di bawah untuk menyimpannya ke koleksi pribadimu.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {bookmarks.map((b) => (
+                      <div
+                        key={b.id}
+                        className="p-4 rounded-2xl bg-sero-purple-50/60 border border-sero-purple-100 flex flex-col justify-between"
+                      >
+                        <p className="text-xs sm:text-sm text-slate-800 font-medium italic mb-3">
+                          "{b.content}"
+                        </p>
+                        <div className="flex items-center justify-between text-[11px] text-slate-500">
+                          <span>— {b.author}</span>
+                          <button
+                            onClick={() => handleToggleBookmark(b.contentBankId)}
+                            className="text-rose-500 hover:underline font-bold"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* All Calming Sentences */}
+              <div className="space-y-4">
+                <h3 className="text-base font-bold text-slate-900">
+                  Eksplorasi Kalimat Penenang Komunitas
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {calmingSentences.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-5 rounded-3xl bg-white border border-slate-200 hover:border-sero-purple-200 shadow-sm flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                            {item.tag}
+                          </span>
+                          <button
+                            onClick={() => handleToggleBookmark(item.id)}
+                            className={`p-1.5 rounded-full transition-colors ${
+                              item.isBookmarked
+                                ? "text-sero-purple-600 bg-sero-purple-50"
+                                : "text-slate-400 hover:text-sero-purple-600"
+                            }`}
+                            title={item.isBookmarked ? "Hapus bookmark" : "Simpan bookmark"}
+                          >
+                            {item.isBookmarked ? (
+                              <BookmarkCheck className="w-4 h-4 fill-sero-purple-600" />
+                            ) : (
+                              <Bookmark className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                        <p className="text-sm text-slate-800 font-medium italic leading-relaxed">
+                          "{item.content}"
+                        </p>
+                      </div>
+                      <p className="text-right text-[11px] text-slate-400 mt-3">
+                        — {item.author || "Tim Serotonin"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: GUIDED PROMPTS */}
+          {activeTab === "PROMPTS" && (
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div>
+                <h2 className="text-base font-bold text-slate-900">
+                  Kumpulan Guided Prompt Refleksi
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Gunakan pertanyaan refleksi ini untuk mengurai pikiran kusut saat menulis jurnal.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                {prompts.map((p) => (
+                  <div
+                    key={p.id}
+                    className="p-5 rounded-2xl bg-slate-50 border border-slate-200 hover:border-sero-purple-300 flex flex-col justify-between transition-colors"
+                  >
+                    <div>
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-sero-purple-100 text-sero-purple-700 uppercase tracking-wider mb-2 inline-block">
+                        {p.tag}
+                      </span>
+                      <p className="text-sm font-semibold text-slate-800 leading-relaxed mb-4">
+                        "{p.content}"
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setJournalContent(`Prompt: ${p.content}\n\n`);
+                        setActiveTab("JOURNAL");
+                      }}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-sero-purple-600 hover:text-sero-purple-700 transition-colors"
+                    >
+                      <span>Gunakan untuk Menulis Jurnal</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
           )}
-
-          {/* Journal Editor */}
-          {user ? (
-            <div className="p-6 sm:p-8 rounded-4xl bg-white border border-slate-200 shadow-lg">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-emerald-600" />
-                  <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
-                    Enkripsi Berlapis (AES-256) Aktif
-                  </span>
-                </div>
-                <span className="text-xs text-slate-400">
-                  {new Date().toLocaleDateString("id-ID", { dateStyle: "full" })}
-                </span>
-              </div>
-
-              {journalAlert && (
-                <div
-                  className={`mb-4 p-4 rounded-2xl border text-xs sm:text-sm flex items-start gap-2.5 ${
-                    journalAlert.type === "success"
-                      ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                      : "bg-rose-50 border-rose-200 text-rose-800"
-                  }`}
-                >
-                  {journalAlert.type === "success" ? (
-                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  )}
-                  <span>{journalAlert.text}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleSaveJournal}>
-                <textarea
-                  rows={6}
-                  required
-                  value={journalContent}
-                  onChange={(e) => setJournalContent(e.target.value)}
-                  placeholder="Keluarkan semua yang ada di kepalamu... Tidak ada penilaian di sini, hanya ada dirimu dan ruang amanmu."
-                  className="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sero-purple-400 text-sm leading-relaxed transition-all"
-                />
-
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4">
-                  <span className="text-xs text-slate-400">
-                    Hanya kamu yang bisa membaca kembali tulisan ini.
-                  </span>
-                  <button
-                    type="submit"
-                    disabled={submittingJournal || !journalContent.trim()}
-                    className="w-full sm:w-auto px-6 py-3 rounded-full bg-gradient-to-r from-sero-purple-500 to-sero-purple-600 hover:from-sero-purple-600 hover:to-sero-purple-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                  >
-                    {submittingJournal ? (
-                      <span>Mengenkripsi & Menyimpan...</span>
-                    ) : (
-                      <>
-                        <span>Simpan Jurnal ✨</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div className="p-8 sm:p-12 rounded-4xl bg-white/80 border border-slate-200 text-center space-y-4 shadow-sm">
-              <div className="w-14 h-14 rounded-full bg-sero-purple-100 text-sero-purple-600 mx-auto flex items-center justify-center">
-                <Lock className="w-7 h-7" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900">
-                Masuk untuk Mulai Menulis Jurnal Pribadimu
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-                Jurnal kamu dienkripsi secara ketat di server dan hanya bisa diakses oleh akun kamu. Daftarkan akunmu secara gratis sekarang.
-              </p>
-              <div className="flex items-center justify-center gap-3 pt-2">
-                <a
-                  href="/login"
-                  className="px-6 py-2.5 rounded-full border border-slate-300 font-bold text-xs sm:text-sm hover:bg-slate-100"
-                >
-                  Masuk
-                </a>
-                <a
-                  href="/register"
-                  className="px-6 py-2.5 rounded-full bg-gradient-to-r from-sero-blue-400 to-sero-purple-500 text-white font-bold text-xs sm:text-sm shadow-md"
-                >
-                  Daftar Akun ✨
-                </a>
-              </div>
-            </div>
-          )}
-
-          {/* Past Journal Entries List */}
-          {user && (
-            <div>
-              <h3 className="text-lg font-bold text-slate-900 mb-4">
-                Riwayat Jurnalmu ({entries.length})
-              </h3>
-
-              {entries.length === 0 ? (
-                <div className="p-8 rounded-3xl bg-white border border-slate-200 text-center text-xs text-slate-400">
-                  Belum ada entri jurnal. Mulai tulis ceritamu di atas ya! 🌱
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {entries.map((entry) => (
-                    <div
-                      key={entry.id}
-                      className="p-5 rounded-3xl bg-white border border-slate-200 hover:border-sero-blue-200 shadow-sm transition-all flex items-start justify-between gap-4"
-                    >
-                      <div className="space-y-1.5 flex-grow">
-                        <span className="text-[11px] font-bold text-sero-purple-600">
-                          {new Date(entry.createdAt).toLocaleString("id-ID", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
-                        </span>
-                        <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
-                          {entry.content}
-                        </p>
-                      </div>
-
-                      <button
-                        onClick={() => handleDeleteJournal(entry.id)}
-                        className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors flex-shrink-0"
-                        title="Hapus entri jurnal ini"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* TAB 2: BREATHING EXERCISE (PRD 3.6) */}
-      {activeTab === "BREATHING" && (
-        <div className="p-8 sm:p-14 rounded-4xl bg-white border border-slate-200 shadow-lg text-center animate-in fade-in space-y-8 max-w-xl mx-auto">
-          <div className="space-y-2">
-            <span className="text-xs font-bold text-sero-blue-600 uppercase tracking-wider">
-              Latihan Pernapasan Kotak (Box Breathing 4-4-4)
-            </span>
-            <h2 className="text-2xl font-bold text-slate-900">Napas Dulu Yuk... 🌿</h2>
-            <p className="text-xs sm:text-sm text-slate-500">
-              Membantu merilekskan sistem saraf, meredakan cemas, dan mengembalikan fokusmu.
-            </p>
-          </div>
-
-          {/* Animated Circle */}
-          <div className="relative w-56 h-56 sm:w-64 sm:h-64 mx-auto flex items-center justify-center">
-            <div
-              className={`absolute inset-0 rounded-full bg-gradient-to-tr from-sero-blue-200 via-sero-purple-200 to-indigo-100 transition-all duration-1000 ${
-                breathingActive
-                  ? breathingPhase === "Tarik Napas"
-                    ? "scale-110 opacity-100"
-                    : breathingPhase === "Tahan"
-                    ? "scale-110 opacity-90"
-                    : "scale-75 opacity-60"
-                  : "scale-90 opacity-50"
-              }`}
-            />
-            <div className="relative z-10 space-y-1">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">
-                {breathingActive ? breathingPhase : "Siap?"}
-              </span>
-              <span className="text-4xl sm:text-5xl font-black text-slate-900">
-                {breathingActive ? breathingCountdown : "4"}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <button
-              onClick={() => setBreathingActive(!breathingActive)}
-              className="px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2"
-            >
-              {breathingActive ? (
-                <>
-                  <Pause className="w-4 h-4" /> Jeda
-                </>
-              ) : (
-                <>
-                  <Play className="w-4 h-4 fill-white" /> Mulai Napas
-                </>
-              )}
-            </button>
-            <button
-              onClick={() => {
-                setBreathingActive(false);
-                setBreathingPhase("Tarik Napas");
-                setBreathingCountdown(4);
-              }}
-              className="p-3.5 rounded-full border border-slate-200 hover:bg-slate-100 text-slate-600 transition-colors"
-              title="Reset"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 3: BOOKMARKS & CALMING SENTENCES (PRD 3.6) */}
-      {activeTab === "BOOKMARKS" && (
-        <div className="space-y-8 animate-in fade-in">
-          {/* User Saved Bookmarks */}
-          {user && (
-            <div className="p-6 sm:p-8 rounded-4xl bg-white border border-slate-200 shadow-sm">
-              <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <BookmarkCheck className="w-5 h-5 text-sero-purple-600" />
-                Kalimat Tersimpan Kamu ({bookmarks.length})
-              </h2>
-
-              {bookmarks.length === 0 ? (
-                <p className="text-xs sm:text-sm text-slate-400">
-                  Belum ada kalimat yang kamu bookmark. Klik ikon bookmark pada kalimat di bawah untuk menyimpannya ke sini!
-                </p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {bookmarks.map((b) => (
-                    <div
-                      key={b.id}
-                      className="p-4 rounded-2xl bg-sero-purple-50/60 border border-sero-purple-100 flex flex-col justify-between"
-                    >
-                      <p className="text-xs sm:text-sm text-slate-800 font-medium italic mb-3">
-                        "{b.content}"
-                      </p>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500">
-                        <span>— {b.author}</span>
-                        <button
-                          onClick={() => handleToggleBookmark(b.contentBankId)}
-                          className="text-rose-500 hover:underline font-bold"
-                        >
-                          Hapus
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* All Calming Sentences from Content Bank */}
-          <div>
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
-              Jelajahi Kalimat Penenang dari Komunitas
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {calmingSentences.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-5 rounded-3xl bg-white border border-slate-200 hover:border-sero-blue-200 shadow-sm flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
-                        {item.tag}
-                      </span>
-                      <button
-                        onClick={() => handleToggleBookmark(item.id)}
-                        className={`p-1.5 rounded-full transition-colors ${
-                          item.isBookmarked
-                            ? "text-sero-purple-600 bg-sero-purple-50"
-                            : "text-slate-400 hover:text-sero-purple-600"
-                        }`}
-                        title={item.isBookmarked ? "Hapus dari bookmark" : "Simpan ke bookmark"}
-                      >
-                        {item.isBookmarked ? (
-                          <BookmarkCheck className="w-4 h-4 fill-sero-purple-600" />
-                        ) : (
-                          <Bookmark className="w-4 h-4" />
-                        )}
-                      </button>
-                    </div>
-                    <p className="text-sm text-slate-800 font-medium italic leading-relaxed">
-                      "{item.content}"
-                    </p>
-                  </div>
-                  <p className="text-right text-[11px] text-slate-400 mt-3">
-                    — {item.author || "Tim Serotonin"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+        </main>
+      </div>
     </div>
   );
 }

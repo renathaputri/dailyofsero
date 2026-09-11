@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Password baru kamu udah aktif! ✨ Silakan login kembali.",
+      message: "Password baru kamu sudah aktif! Silakan login kembali.",
     });
   } catch (error) {
     console.error("Reset password error:", error);

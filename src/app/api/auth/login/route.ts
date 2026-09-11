@@ -89,7 +89,7 @@ export async function POST(req: Request) {
     if (!user.isVerified) {
       return NextResponse.json(
         {
-          error: "Akun kamu belum diverifikasi. Cek inbox/spam email kamu untuk klik link aktivasi ya! ✉️",
+          error: "Akun kamu belum diverifikasi. Cek inbox/spam email kamu untuk klik link aktivasi ya.",
           unverified: true,
           email: user.email,
         },

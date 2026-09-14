@@ -65,15 +65,23 @@ export async function POST(req: Request) {
       });
     }
 
-    // 2. Jalur Pengunjung / User (Email)
-    const normalizedEmail = identifier.trim().toLowerCase();
-    const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+    // 2. Jalur Pengunjung / User (Email atau Username)
+    const normalizedIdentifier = identifier.trim().toLowerCase();
+
+    // Try finding by email first, then by username
+    let user = await prisma.user.findUnique({
+      where: { email: normalizedIdentifier },
     });
 
     if (!user) {
+      user = await prisma.user.findUnique({
+        where: { username: normalizedIdentifier },
+      });
+    }
+
+    if (!user) {
       return NextResponse.json(
-        { error: "Email atau password yang kamu masukkan belum cocok." },
+        { error: "Email/username atau password yang kamu masukkan belum cocok." },
         { status: 401 }
       );
     }
@@ -81,19 +89,8 @@ export async function POST(req: Request) {
     const isValid = await verifyPassword(password, user.password);
     if (!isValid) {
       return NextResponse.json(
-        { error: "Email atau password yang kamu masukkan belum cocok." },
+        { error: "Email/username atau password yang kamu masukkan belum cocok." },
         { status: 401 }
-      );
-    }
-
-    if (!user.isVerified) {
-      return NextResponse.json(
-        {
-          error: "Akun kamu belum diverifikasi. Cek inbox/spam email kamu untuk klik link aktivasi ya.",
-          unverified: true,
-          email: user.email,
-        },
-        { status: 403 }
       );
     }
 
@@ -101,6 +98,7 @@ export async function POST(req: Request) {
       id: user.id,
       type: "USER",
       email: user.email,
+      username: user.username,
     });
 
     return NextResponse.json({
@@ -110,6 +108,7 @@ export async function POST(req: Request) {
         id: user.id,
         type: "USER",
         email: user.email,
+        username: user.username,
       },
     });
   } catch (error) {

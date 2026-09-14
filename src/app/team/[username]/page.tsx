@@ -79,7 +79,7 @@ export default function MemberPortfolioPage() {
           href="/team"
           className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" /> Kembali ke Seluruh Tim
+          <ArrowLeft className="w-4 h-4" /> Kembali ke Serotonin 5
         </a>
       </div>
 
@@ -96,8 +96,8 @@ export default function MemberPortfolioPage() {
               className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-white shadow-md flex-shrink-0"
             />
           ) : (
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-tr from-sero-blue-400 to-sero-purple-500 text-white font-black text-3xl flex items-center justify-center shadow-md flex-shrink-0">
-              {member.name.charAt(0)}
+            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-slate-100 border-2 border-slate-200 text-slate-400 flex items-center justify-center shadow-md flex-shrink-0">
+              <User className="w-16 h-16" />
             </div>
           )}
 
@@ -169,7 +169,7 @@ export default function MemberPortfolioPage() {
 
                 <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-rose-500">
                   <span className="flex items-center gap-1">
-                    <Instagram className="w-3.5 h-3.5" /> Buka Instagram
+                    <Instagram className="w-3.5 h-3.5" /> Lihat Karya
                   </span>
                   <span className="text-slate-400 font-normal">
                     {new Date(k.createdAt).toLocaleDateString("id-ID")}

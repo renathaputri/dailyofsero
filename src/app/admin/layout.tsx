@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, UserCheck, Database, Calendar, Users, Bell, Shield, LogOut, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, BookOpen, UserCheck, Database, Calendar, Users, Bell, Shield, LogOut, ArrowLeft, User } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -43,7 +43,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const navItems = [
     { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/karya", label: "Kelola Karya", icon: BookOpen },
+    { href: "/admin/karya", label: "Karya Saya", icon: BookOpen },
     { href: "/admin/portfolio", label: "Mini Portfolio Saya", icon: UserCheck },
     { href: "/admin/content-bank", label: "Content Bank", icon: Database },
     { href: "/admin/notifications", label: "Notifikasi In-App", icon: Bell },
@@ -70,8 +70,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   className="w-12 h-12 rounded-2xl object-cover border border-slate-200"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-2xl bg-sero-purple-100 text-sero-purple-600 font-bold flex items-center justify-center">
-                  {admin?.name?.charAt(0) || "A"}
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 border border-slate-200 flex items-center justify-center">
+                  <User className="w-6 h-6" />
                 </div>
               )}
               <div className="overflow-hidden">

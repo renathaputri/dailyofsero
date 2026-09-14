@@ -136,8 +136,8 @@ export default function AdminCounselorsPage() {
                       className="w-12 h-12 rounded-2xl object-cover border border-slate-200"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 font-bold flex items-center justify-center">
-                      {c.name.charAt(0)}
+                    <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center">
+                      <User className="w-6 h-6" />
                     </div>
                   )}
                   <div className="overflow-hidden">

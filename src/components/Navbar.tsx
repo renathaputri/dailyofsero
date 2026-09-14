@@ -55,7 +55,7 @@ export default function Navbar() {
     { href: "/", label: "Beranda", icon: Home },
     { href: "/karya", label: "Galeri Karya", icon: BookOpen },
     { href: "/event", label: "Event", icon: Calendar },
-    { href: "/team", label: "Our Team", icon: Users },
+    { href: "/team", label: "Serotonin 5", icon: Users },
     { href: "/awaremind", label: "AwareMind", icon: ShieldAlert },
   ];
 
@@ -66,7 +66,7 @@ export default function Navbar() {
         { href: "/healing", label: "Healing Corner", icon: Heart, isSpecial: true },
         { href: "/karya", label: "Galeri Karya", icon: BookOpen },
         { href: "/event", label: "Event", icon: Calendar },
-        { href: "/team", label: "Our Team", icon: Users },
+        { href: "/team", label: "Serotonin 5", icon: Users },
         { href: "/awaremind", label: "AwareMind", icon: ShieldAlert },
       ]
     : publicNavLinks;
@@ -83,7 +83,7 @@ export default function Navbar() {
           {/* Brand Logo - Plain Text Only */}
           <a href="/" className="flex items-center focus:outline-none group">
             <span className="font-black text-2xl tracking-tight text-purple-700 group-hover:text-purple-800 transition-colors">
-              DailyofSero
+              MindSpace
             </span>
           </a>
 

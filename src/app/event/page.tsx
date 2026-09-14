@@ -47,7 +47,7 @@ export default function EventsPage() {
         </p>
       </div>
 
-      {/* Filter Tabs (Upcoming vs Past) */}
+      {/* Filter Tabs (Akan Datang vs Selesai) */}
       <div className="flex items-center justify-center gap-2 mb-10">
         <button
           onClick={() => setFilter("UPCOMING")}
@@ -57,7 +57,7 @@ export default function EventsPage() {
               : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
           }`}
         >
-          Akan Datang (Upcoming)
+          Akan Datang
         </button>
         <button
           onClick={() => setFilter("PAST")}
@@ -67,7 +67,7 @@ export default function EventsPage() {
               : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
           }`}
         >
-          Telah Selesai (Past)
+          Sudah Selesai
         </button>
         <button
           onClick={() => setFilter("ALL")}
@@ -83,74 +83,74 @@ export default function EventsPage() {
 
       {/* Events Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[1, 2].map((i) => (
-            <div key={i} className="h-56 rounded-4xl bg-slate-100 animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-48 rounded-2xl bg-slate-100 animate-pulse" />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="p-12 rounded-4xl bg-white/70 border border-slate-200 text-center max-w-md mx-auto">
-          <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <h3 className="font-bold text-slate-800 text-base">Tidak Ada Event</h3>
+        <div className="p-10 rounded-3xl bg-white/70 border border-slate-200 text-center max-w-md mx-auto">
+          <Calendar className="w-10 h-10 text-slate-300 mx-auto mb-2.5" />
+          <h3 className="font-bold text-slate-800 text-sm">Tidak Ada Event</h3>
           <p className="text-xs text-slate-500 mt-1">
             Belum ada jadwal event untuk kategori ini. Nantikan pengumuman selanjutnya ya!
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredEvents.map((evt) => {
             const isUpcoming = evt.status === "UPCOMING";
             const dateFormatted = new Date(evt.eventDate).toLocaleDateString("id-ID", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
+              weekday: "short",
               day: "numeric",
+              month: "short",
+              year: "numeric",
             });
 
             return (
               <div
                 key={evt.id}
-                className="p-7 sm:p-8 rounded-4xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-sero-blue-300 transition-all duration-300 flex flex-col justify-between"
+                className="p-5 sm:p-5.5 rounded-2xl sm:rounded-3xl bg-white border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-purple-300 transition-all duration-300 flex flex-col justify-between group"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between gap-2 mb-3">
                     <span
-                      className={`text-xs font-bold px-3 py-1 rounded-full border ${
+                      className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
                         isUpcoming
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                           : "bg-slate-100 text-slate-600 border-slate-200"
                       }`}
                     >
-                      {isUpcoming ? "Upcoming Event" : "Selesai Dituntaskan"}
+                      {isUpcoming ? "Akan Datang" : "Selesai"}
                     </span>
-                    <span className="text-xs font-semibold text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
+                    <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1 whitespace-nowrap">
+                      <Clock className="w-3 h-3 text-slate-400" />
                       {dateFormatted}
                     </span>
                   </div>
 
-                  <h2 className="text-xl font-bold text-slate-900 mb-3 leading-snug">
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900 mb-2 leading-snug group-hover:text-purple-700 transition-colors line-clamp-2">
                     {evt.title}
                   </h2>
 
-                  <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                  <p className="text-xs text-slate-600 leading-relaxed line-clamp-3 mb-4">
                     {evt.description}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100">
+                <div className="pt-3 border-t border-slate-100 mt-auto">
                   {isUpcoming ? (
                     <a
                       href={evt.formLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-sero-blue-500 to-sero-purple-600 hover:from-sero-blue-600 hover:to-sero-purple-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 group"
+                      className="w-full py-2.5 px-4 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 group"
                     >
                       <span>Daftar via Google Form</span>
-                      <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                     </a>
                   ) : (
-                    <div className="w-full py-3 px-5 rounded-2xl bg-slate-100 text-slate-400 font-semibold text-xs sm:text-sm text-center">
+                    <div className="w-full py-2 px-4 rounded-xl bg-slate-100 text-slate-400 font-semibold text-xs text-center">
                       Event Ini Telah Selesai
                     </div>
                   )}

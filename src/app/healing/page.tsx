@@ -897,7 +897,7 @@ export default function HealingPage() {
                           "{b.content}"
                         </p>
                         <div className="flex items-center justify-between text-[11px] text-slate-500">
-                          <span>— {b.author}</span>
+                          <span>Oleh {b.author}</span>
                           <button
                             onClick={() => handleToggleBookmark(b.contentBankId)}
                             className="text-rose-500 hover:underline font-bold"
@@ -948,7 +948,7 @@ export default function HealingPage() {
                         </p>
                       </div>
                       <p className="text-right text-[11px] text-slate-400 mt-3">
-                        — {item.author || "Tim Serotonin"}
+                        Oleh {item.author || "Tim Serotonin"}
                       </p>
                     </div>
                   ))}

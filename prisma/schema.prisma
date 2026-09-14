@@ -11,9 +11,9 @@ generator client {
 
 model User {
   id            String   @id @default(cuid())
+  username      String   @unique
   email         String   @unique
   password      String   // hashed
-  isVerified    Boolean  @default(false)
   createdAt     DateTime @default(now())
 
   journalEntries     JournalEntry[]

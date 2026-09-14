@@ -91,7 +91,7 @@ export async function DELETE(
       });
 
       // Send email notification to BA
-      const targetEmail = `${karya.owner.username}@dailyofsero.internal`;
+      const targetEmail = `${karya.owner.username}@mindspace.internal`;
       await sendTakedownEmail(targetEmail, karya.title, reason);
     }
 

@@ -40,8 +40,8 @@ export async function GET() {
       where: { id: session.id },
       select: {
         id: true,
+        username: true,
         email: true,
-        isVerified: true,
         createdAt: true,
         streak: {
           select: {
@@ -61,8 +61,8 @@ export async function GET() {
       user: {
         id: user.id,
         type: "USER",
+        username: user.username,
         email: user.email,
-        isVerified: user.isVerified,
         streak: user.streak,
       },
     });

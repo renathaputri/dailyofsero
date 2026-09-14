@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ShieldAlert, ExternalLink, HeartHandshake, PhoneCall, Sparkles, CheckCircle2, UserCheck } from "lucide-react";
+import { ShieldAlert, ExternalLink, HeartHandshake, PhoneCall, Sparkles, CheckCircle2, UserCheck, User } from "lucide-react";
 
 interface Counselor {
   id: string;
@@ -37,7 +37,7 @@ export default function AwareMindPage() {
           Layanan Konseling AwareMind
         </h1>
         <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-          DailyOfSero bermitra resmi dengan <strong>AwareMind</strong> untuk menghubungkanmu dengan psikolog dan konselor profesional berlisensi.
+          MindSpace bermitra resmi dengan <strong>AwareMind</strong> untuk menghubungkanmu dengan psikolog dan konselor profesional berlisensi.
         </p>
       </div>
 
@@ -115,8 +115,8 @@ export default function AwareMindPage() {
                         className="w-full h-full rounded-2xl object-cover border-2 border-slate-100 shadow-md"
                       />
                     ) : (
-                      <div className="w-full h-full rounded-2xl bg-rose-100 text-rose-600 font-bold text-2xl flex items-center justify-center">
-                        {c.name.charAt(0)}
+                      <div className="w-full h-full rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center">
+                        <User className="w-12 h-12" />
                       </div>
                     )}
                   </div>

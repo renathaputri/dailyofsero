@@ -81,17 +81,15 @@ export default function ProfilePage() {
         {/* Profile Card */}
         <div className="p-6 sm:p-8 rounded-4xl bg-white border border-slate-200 shadow-sm space-y-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sero-blue-400 to-sero-purple-500 text-white font-bold text-2xl flex items-center justify-center shadow-md">
-              {user?.email?.charAt(0).toUpperCase()}
+            <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center shadow-xs">
+              <User className="w-8 h-8" />
             </div>
             <div>
               <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sero-blue-100 text-sero-blue-700">
                 Pengunjung Terverifikasi
               </span>
-              <h2 className="text-lg font-bold text-slate-900 mt-1">{user?.email}</h2>
-              <p className="text-xs text-slate-400">
-                Data profil minimal untuk menjaga privasi identitasmu
-              </p>
+              <h2 className="text-lg font-bold text-slate-900 mt-1">@{user?.username}</h2>
+              <p className="text-xs text-slate-400">{user?.email}</p>
             </div>
           </div>
 

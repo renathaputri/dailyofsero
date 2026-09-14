@@ -102,18 +102,18 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                {tab === "USER" ? "Email Terdaftar" : "Username Admin / BA"}
+                {tab === "USER" ? "Email atau Username" : "Username Admin / BA"}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   {tab === "USER" ? <Mail className="w-4 h-4" /> : <User className="w-4 h-4" />}
                 </div>
                 <input
-                  type={tab === "USER" ? "email" : "text"}
+                  type="text"
                   required
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder={tab === "USER" ? "nama@domain.com" : "username_kamu"}
+                  placeholder={tab === "USER" ? "email atau username kamu" : "username_kamu"}
                   className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sero-purple-400 focus:border-transparent text-sm transition-all"
                 />
               </div>

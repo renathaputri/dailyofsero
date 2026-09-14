@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, Sparkles, BookOpen, ArrowRight, ShieldCheck, Heart, Crown, Award } from "lucide-react";
+import { Users, Sparkles, BookOpen, ArrowRight, Crown, Award, User } from "lucide-react";
 
 interface TeamMember {
   id: string;
@@ -36,55 +36,101 @@ export default function TeamPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const mindCaptains = team.filter((m) => m.title === "MIND_CAPTAIN");
-  const coCaptains = team.filter((m) => m.title === "CO_CAPTAIN");
+  // Ensure only 1 Mind Captain and 1 Co-Captain
+  const mindCaptain = team.filter((m) => m.title === "MIND_CAPTAIN")[0] || null;
+  const coCaptain = team.filter((m) => m.title === "CO_CAPTAIN")[0] || null;
   const brandAmbassadors = team.filter((m) => m.title === "BA");
 
-  const renderMemberCard = (member: TeamMember) => {
+  const renderMemberCard = (member: TeamMember, isLeader: boolean = false) => {
     const titleConfig = titleLabels[member.title] || { label: member.title, badge: "bg-slate-100 text-slate-700" };
 
     return (
       <a
         key={member.id}
         href={`/team/${member.username}`}
-        className="group p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-xl hover:border-sero-purple-300 transition-all duration-300 flex flex-col justify-between"
+        className={`group rounded-2xl sm:rounded-3xl bg-white border border-slate-200 shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 flex flex-col items-center justify-between text-center ${
+          isLeader
+            ? "p-6 sm:p-7 bg-gradient-to-b from-purple-50/40 via-white to-white border-purple-200/80"
+            : "p-4 sm:p-5"
+        }`}
       >
-        <div>
-          <div className="flex items-start gap-4 mb-4">
+        <div className="flex flex-col items-center w-full">
+          {/* Centered Avatar */}
+          <div className="relative mb-3">
             {member.photoUrl ? (
               <img
                 src={member.photoUrl}
                 alt={member.name}
-                className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-100 shadow-sm group-hover:scale-105 transition-transform"
+                className={`rounded-full object-cover border-4 border-slate-100 shadow-md group-hover:scale-105 transition-transform mx-auto ${
+                  isLeader ? "w-20 h-20" : "w-16 h-16"
+                }`}
               />
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sero-blue-400 to-sero-purple-500 text-white font-black text-xl flex items-center justify-center shadow-md">
-                {member.name.charAt(0)}
+              <div
+                className={`rounded-full bg-slate-100 border-2 border-slate-200 text-slate-400 flex items-center justify-center shadow-md mx-auto group-hover:text-purple-600 transition-colors ${
+                  isLeader ? "w-20 h-20" : "w-16 h-16"
+                }`}
+              >
+                <User className={isLeader ? "w-10 h-10" : "w-8 h-8"} />
               </div>
             )}
-            <div className="space-y-1">
-              <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${titleConfig.badge}`}>
-                {titleConfig.label}
-              </span>
-              <h2 className="text-base font-bold text-slate-900 group-hover:text-sero-purple-700 transition-colors">
-                {member.name}
-              </h2>
-              <p className="text-xs text-slate-400">@{member.username}</p>
-            </div>
+            {member.title === "MIND_CAPTAIN" && (
+              <div className="absolute -top-1 -right-1 p-1 bg-indigo-600 text-white rounded-full shadow-sm">
+                <Crown className="w-3.5 h-3.5" />
+              </div>
+            )}
+            {member.title === "CO_CAPTAIN" && (
+              <div className="absolute -top-1 -right-1 p-1 bg-purple-600 text-white rounded-full shadow-sm">
+                <Award className="w-3.5 h-3.5" />
+              </div>
+            )}
           </div>
 
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3 mb-4">
-            {member.bio || "Menjadi bagian dari safe space Tim Serotonin untuk saling menguatkan."}
+          {/* Centered Role Badge */}
+          <div className="mb-2">
+            <span
+              className={`inline-flex items-center justify-center font-bold px-2.5 py-0.5 rounded-full border ${
+                titleConfig.badge
+              } ${isLeader ? "text-[11px]" : "text-[10px]"}`}
+            >
+              {titleConfig.label}
+            </span>
+          </div>
+
+          {/* Centered Name & Username */}
+          <h2
+            className={`font-bold text-slate-900 group-hover:text-purple-700 transition-colors line-clamp-1 ${
+              isLeader ? "text-lg" : "text-sm sm:text-base"
+            }`}
+          >
+            {member.name}
+          </h2>
+          <p className="text-[11px] text-slate-400 mb-2">@{member.username}</p>
+
+          {/* Centered Bio */}
+          <p
+            className={`text-slate-600 leading-relaxed px-1 mb-4 ${
+              isLeader
+                ? "text-xs sm:text-sm line-clamp-3"
+                : "text-[11px] sm:text-xs line-clamp-2"
+            }`}
+          >
+            {member.bio || "Menjadi bagian dari safe space Serotonin 5 untuk saling menguatkan."}
           </p>
         </div>
 
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-          <span className="flex items-center gap-1.5 font-semibold text-slate-500">
-            <BookOpen className="w-4 h-4 text-sero-blue-500" />
-            {member._count.karya} Karya Publikasi
+        {/* Centered Card Footer */}
+        <div
+          className={`w-full pt-3 border-t border-slate-100 flex items-center justify-center gap-3 ${
+            isLeader ? "text-xs" : "text-[11px]"
+          }`}
+        >
+          <span className="flex items-center gap-1 font-semibold text-slate-500">
+            <BookOpen className="w-3 h-3 text-sky-500" />
+            {member._count?.karya || 0} Karya
           </span>
-          <span className="font-bold text-sero-purple-600 group-hover:translate-x-1 transition-transform flex items-center gap-1">
-            Mini Portfolio <ArrowRight className="w-3.5 h-3.5" />
+          <span className="font-bold text-purple-600 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+            Lihat Profil <ArrowRight className="w-3 h-3" />
           </span>
         </div>
       </a>
@@ -92,63 +138,59 @@ export default function TeamPage() {
   };
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      {/* Header */}
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      {/* Header - Rata Tengah */}
       <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-sero-blue-100 text-sero-blue-700 text-xs font-bold uppercase tracking-wider">
-          <Users className="w-3.5 h-3.5" /> Tim Serotonin
+        <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-bold uppercase tracking-wider">
+          <Users className="w-3.5 h-3.5" /> Serotonin 5
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-          Kenalan bareng Mind Captain & BA
+          Kenalan dengan Serotonin 5
         </h1>
         <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-          Struktur kepemimpinan dan Brand Ambassador Tim Serotonin yang senantiasa menghadirkan ruang aman dan karya inspiratif untukmu.
+          Struktur kepemimpinan dan Brand Ambassador Serotonin 5 yang senantiasa menghadirkan ruang aman dan karya edukatif inspiratif untukmu di MindSpace.
         </p>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-56 rounded-3xl bg-slate-100 animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-56 rounded-2xl bg-slate-100 animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="space-y-12">
-          {/* Mind Captain Section */}
-          {mindCaptains.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-indigo-100">
-                <Crown className="w-5 h-5 text-indigo-600" />
-                <h2 className="text-xl font-bold text-slate-900">Mind Captain</h2>
+        <div className="space-y-16">
+          {/* Leadership Section: Exactly 1 Mind Captain & 1 Co-Captain - Rata Tengah */}
+          {(mindCaptain || coCaptain) && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <span className="text-xs font-bold uppercase tracking-widest text-purple-600 block mb-1">
+                  Kepemimpinan Komunitas
+                </span>
+                <h2 className="text-2xl font-black text-slate-900">
+                  Mind Captain & Co-Captain
+                </h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mindCaptains.map(renderMemberCard)}
-              </div>
-            </div>
-          )}
-
-          {/* Co-Captain Section */}
-          {coCaptains.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-purple-100">
-                <Award className="w-5 h-5 text-purple-600" />
-                <h2 className="text-xl font-bold text-slate-900">Co-Captain</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {coCaptains.map(renderMemberCard)}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                {mindCaptain && renderMemberCard(mindCaptain, true)}
+                {coCaptain && renderMemberCard(coCaptain, true)}
               </div>
             </div>
           )}
 
-          {/* Brand Ambassadors Section */}
+          {/* Brand Ambassadors Section - 5 Cards Per Row on Desktop */}
           {brandAmbassadors.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-sky-100">
-                <Sparkles className="w-5 h-5 text-sky-600" />
-                <h2 className="text-xl font-bold text-slate-900">Brand Ambassador (BA)</h2>
+            <div className="space-y-6">
+              <div className="text-center">
+                <span className="text-xs font-bold uppercase tracking-widest text-sky-600 block mb-1">
+                  Kreator & Edukasi
+                </span>
+                <h2 className="text-2xl font-black text-slate-900">
+                  Brand Ambassador (BA)
+                </h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {brandAmbassadors.map(renderMemberCard)}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5 w-full">
+                {brandAmbassadors.map((ba) => renderMemberCard(ba, false))}
               </div>
             </div>
           )}

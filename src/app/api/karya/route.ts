@@ -7,7 +7,15 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category") as KaryaCategory | null;
-    const ownerId = searchParams.get("ownerId");
+    let ownerId = searchParams.get("ownerId");
+    const my = searchParams.get("my");
+
+    if (my === "true") {
+      const session = await getSession();
+      if (session && session.type === "ADMIN") {
+        ownerId = session.id;
+      }
+    }
 
     const whereClause: any = {};
     if (category) whereClause.category = category;

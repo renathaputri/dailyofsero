@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
           <ShieldCheck className="w-4 h-4" /> Keamanan Data Sensitif
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-          Kebijakan Privasi DailyOfSero
+          Kebijakan Privasi MindSpace
         </h1>
         <p className="text-sm text-slate-500">Terakhir diperbarui: 11 September 2026</p>
       </div>
@@ -20,7 +20,7 @@ export default function PrivacyPolicyPage() {
             <Heart className="w-5 h-5 text-rose-500" /> Komitmen Ruang Aman Kami
           </h2>
           <p>
-            DailyOfSero (dibangun oleh Tim Serotonin) menjunjung tinggi privasi setiap individu. Kami menyadari bahwa kesehatan mental dan catatan perasaan merupakan data yang sangat pribadi dan sensitif.
+            MindSpace (dibangun oleh Tim Serotonin Batch 5) menjunjung tinggi privasi setiap individu. Kami menyadari bahwa kesehatan mental dan catatan perasaan merupakan data yang sangat pribadi dan sensitif.
           </p>
         </section>
 
@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
         <section className="space-y-3">
           <h2 className="text-lg font-bold text-slate-900">Hubungi Kami</h2>
           <p>
-            Pertanyaan seputar kebijakan privasi dan keamanan data dapat kamu sampaikan langsung kepada tim kami melalui Mind Captain Tim Serotonin di platform resmi DailyOfSero.
+            Pertanyaan seputar kebijakan privasi dan keamanan data dapat kamu sampaikan langsung kepada tim kami melalui Mind Captain Tim Serotonin Batch 5 di platform resmi MindSpace.
           </p>
         </section>
       </div>

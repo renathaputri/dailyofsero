@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Users, Plus, KeyRound, Edit3, ShieldAlert, CheckCircle2, Lock } from "lucide-react";
+import { Users, Plus, KeyRound, Edit3, ShieldAlert, CheckCircle2, Lock, Eye, EyeOff, User } from "lucide-react";
 
 interface AdminUser {
   id: string;
@@ -25,6 +25,7 @@ export default function AdminUsersPage() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [role, setRole] = useState<"ADMIN" | "SUPERADMIN">("ADMIN");
   const [title, setTitle] = useState<"MIND_CAPTAIN" | "CO_CAPTAIN" | "BA">("BA");
@@ -35,10 +36,12 @@ export default function AdminUsersPage() {
   // Modal Edit / Reset Password
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [targetAdmin, setTargetAdmin] = useState<AdminUser | null>(null);
+  const [editUsername, setEditUsername] = useState("");
   const [editName, setEditName] = useState("");
   const [editRole, setEditRole] = useState<"ADMIN" | "SUPERADMIN">("ADMIN");
   const [editTitle, setEditTitle] = useState<"MIND_CAPTAIN" | "CO_CAPTAIN" | "BA">("BA");
   const [newPassword, setNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [editAlert, setEditAlert] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -94,6 +97,7 @@ export default function AdminUsersPage() {
 
   const openEditModal = (a: AdminUser) => {
     setTargetAdmin(a);
+    setEditUsername(a.username);
     setEditName(a.name);
     setEditRole(a.role);
     setEditTitle(a.title);
@@ -114,6 +118,7 @@ export default function AdminUsersPage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          username: editUsername,
           name: editName,
           role: editRole,
           title: editTitle,
@@ -181,8 +186,8 @@ export default function AdminUsersPage() {
                       className="w-12 h-12 rounded-2xl object-cover border border-slate-200"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center">
-                      {a.name.charAt(0)}
+                    <div className="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center">
+                      <User className="w-6 h-6" />
                     </div>
                   )}
                   <div>
@@ -250,15 +255,25 @@ export default function AdminUsersPage() {
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                   Password Awal (Min 6 Karakter)
                 </label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full p-3 rounded-2xl border border-slate-200 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-400"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={6}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password akun baru..."
+                    className="w-full p-3 pr-10 rounded-2xl border border-slate-200 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-400 font-sans"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -371,6 +386,26 @@ export default function AdminUsersPage() {
             <form onSubmit={handleUpdateAdmin} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  Username (Login & Tautan Tim)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">@</span>
+                  <input
+                    type="text"
+                    required
+                    value={editUsername}
+                    onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                    placeholder="username"
+                    className="w-full p-3 pl-8 rounded-2xl border border-slate-200 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-400 font-mono"
+                  />
+                </div>
+                <span className="text-[10px] text-slate-400 mt-1 block">
+                  Tautan profil: /team/{editUsername || "..."}
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                   Nama Lengkap
                 </label>
                 <input
@@ -419,14 +454,24 @@ export default function AdminUsersPage() {
                   <KeyRound className="w-3.5 h-3.5" />
                   <span>Reset Kata Sandi Manual</span>
                 </label>
-                <input
-                  type="password"
-                  minLength={6}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Isi jika ingin mereset password baru..."
-                  className="w-full p-3 rounded-2xl border border-rose-200 bg-rose-50/30 text-xs text-slate-800 focus:ring-2 focus:ring-rose-400"
-                />
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    minLength={6}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Isi jika ingin mereset password baru..."
+                    className="w-full p-3 pr-10 rounded-2xl border border-rose-200 bg-rose-50/30 text-xs text-slate-800 focus:ring-2 focus:ring-rose-400 font-sans"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-rose-400 hover:text-rose-600 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
                 <span className="text-[10px] text-slate-400 mt-1 block">
                   Mereset password akan otomatis memicu notifikasi in-app kepada akun ini.
                 </span>

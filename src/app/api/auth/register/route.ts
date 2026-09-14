@@ -1,15 +1,22 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
-import { hashPassword } from "@/lib/auth";
-import { sendVerificationEmail } from "@/lib/email";
+import { hashPassword, createSession } from "@/lib/auth";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, password, consent } = body;
+    const { username, email, password, consent } = body;
+
+    // Validate username
+    if (!username || !USERNAME_REGEX.test(username)) {
+      return NextResponse.json(
+        { error: "Username harus 3-20 karakter, hanya huruf, angka, dan underscore." },
+        { status: 400 }
+      );
+    }
 
     if (!email || !EMAIL_REGEX.test(email)) {
       return NextResponse.json(
@@ -33,15 +40,28 @@ export async function POST(req: Request) {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username.trim().toLowerCase();
 
-    // Check existing
-    const existing = await prisma.user.findUnique({
+    // Check existing email
+    const existingEmail = await prisma.user.findUnique({
       where: { email: normalizedEmail },
     });
 
-    if (existing) {
+    if (existingEmail) {
       return NextResponse.json(
         { error: "Email ini sudah terdaftar. Kamu bisa langsung masuk atau reset password ya." },
+        { status: 409 }
+      );
+    }
+
+    // Check existing username
+    const existingUsername = await prisma.user.findUnique({
+      where: { username: normalizedUsername },
+    });
+
+    if (existingUsername) {
+      return NextResponse.json(
+        { error: "Username ini sudah dipakai. Coba pilih username lain ya." },
         { status: 409 }
       );
     }
@@ -50,32 +70,24 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.create({
       data: {
+        username: normalizedUsername,
         email: normalizedEmail,
         password: hashedPassword,
-        isVerified: false,
       },
     });
 
-    // Generate verification token (expires in 24 hours)
-    const token = crypto.randomBytes(32).toString("hex");
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-    await prisma.verificationToken.create({
-      data: {
-        userId: user.id,
-        token,
-        type: "EMAIL_VERIFY",
-        expiresAt,
-      },
+    // Auto-login after registration
+    await createSession({
+      id: user.id,
+      type: "USER",
+      email: user.email,
+      username: user.username,
     });
-
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    await sendVerificationEmail(user.email, token, appUrl);
 
     return NextResponse.json({
       success: true,
-      message: "Akun berhasil dibuat! Link verifikasi sudah kami kirimkan ke email kamu.",
-      verificationLinkPreview: `${appUrl}/verify-email?token=${token}`, // Dev friendly preview
+      message: "Akun berhasil dibuat! Selamat datang di MindSpace 🎉",
+      redirect: "/healing",
     });
   } catch (error) {
     console.error("Registration error:", error);

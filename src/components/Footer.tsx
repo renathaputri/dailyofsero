@@ -15,18 +15,15 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sero-blue-500 to-sero-purple-600 flex items-center justify-center text-white shadow-sm">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <span className="font-extrabold text-lg text-slate-900 tracking-tight">
-                DailyOfSero
+              <span className="font-extrabold text-lg text-purple-600 tracking-tight">
+                MindSpace
               </span>
             </div>
             <p className="text-sm text-slate-600 max-w-md leading-relaxed">
-              Ruang bertumbuh dan berefleksi yang aman untukmu. Dikembangkan dengan cinta dan kepedulian oleh <strong>Tim Serotonin</strong> sebagai safe space kesehatan mental generasi muda.
+              Ruang bertumbuh dan berefleksi yang aman untukmu. Dikembangkan dengan cinta dan kepedulian oleh <strong>Tim Serotonin Batch 5</strong> sebagai safe space kesehatan mental generasi muda.
             </p>
             <div className="pt-2 text-xs text-slate-500 flex items-center gap-1.5">
-              <span>Dibuat dengan dedikasi oleh Tim Serotonin</span>
+              <span>Dibuat dengan dedikasi oleh Tim Serotonin Batch 5</span>
             </div>
           </div>
 
@@ -51,7 +48,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="/team" className="hover:text-sero-purple-600 transition-colors">
-                  Our Team
+                  Serotonin 5
                 </a>
               </li>
               <li>
@@ -97,7 +94,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-          <p>© 2026 DailyOfSero — Tim Serotonin. Hak Cipta Dilindungi.</p>
+          <p>© 2026 MindSpace oleh Tim Serotonin Batch 5. Hak Cipta Dilindungi.</p>
           <p className="text-center sm:text-right">
             Jurnal pribadimu terenkripsi end-to-end (AES-256) dan tidak dapat diakses siapapun.
           </p>

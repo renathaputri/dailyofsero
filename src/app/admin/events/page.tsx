@@ -144,7 +144,7 @@ export default function AdminEventsPage() {
                           : "bg-slate-100 text-slate-600"
                       }`}
                     >
-                      {evt.status}
+                      {evt.status === "UPCOMING" ? "Akan Datang" : "Selesai"}
                     </span>
                     <span className="text-[11px] text-slate-400 flex items-center gap-1">
                       <Clock className="w-3.5 h-3.5" />

@@ -13,9 +13,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "DailyOfSero — Mental Health & Community Platform",
+  title: "MindSpace | Platform Kesehatan Mental & Komunitas",
   description: "Platform safe space kesehatan mental untuk bertumbuh, refleksi diri melalui jurnal terenkripsi, galeri karya Brand Ambassador, dan akses konseling resmi AwareMind.",
-  keywords: ["mental health", "daily of sero", "dailyofsero", "tim serotonin", "self-care", "mindful journaling", "awaremind"],
+  keywords: ["mental health", "mindspace", "mind space", "tim serotonin batch 5", "tim serotonin", "self-care", "mindful journaling", "awaremind"],
 };
 
 export default function RootLayout({

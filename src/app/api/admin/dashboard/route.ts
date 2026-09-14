@@ -31,8 +31,7 @@ export async function GET() {
 
     // Superadmin Comprehensive Metrics (PRD 3.10)
     const [
-      totalUsersVerified,
-      totalUsersUnverified,
+      totalUsers,
       mindCaptainsCount,
       coCaptainsCount,
       baCount,
@@ -43,8 +42,7 @@ export async function GET() {
       recentKarya,
       recentUsers,
     ] = await Promise.all([
-      prisma.user.count({ where: { isVerified: true } }),
-      prisma.user.count({ where: { isVerified: false } }),
+      prisma.user.count(),
       prisma.admin.count({ where: { title: AdminTitle.MIND_CAPTAIN } }),
       prisma.admin.count({ where: { title: AdminTitle.CO_CAPTAIN } }),
       prisma.admin.count({ where: { title: AdminTitle.BA } }),
@@ -60,7 +58,7 @@ export async function GET() {
       prisma.user.findMany({
         take: 5,
         orderBy: { createdAt: "desc" },
-        select: { id: true, email: true, isVerified: true, createdAt: true },
+        select: { id: true, username: true, email: true, createdAt: true },
       }),
     ]);
 
@@ -74,9 +72,7 @@ export async function GET() {
       unreadNotifications: myNotificationsCount,
       stats: {
         users: {
-          verified: totalUsersVerified,
-          unverified: totalUsersUnverified,
-          total: totalUsersVerified + totalUsersUnverified,
+          total: totalUsers,
         },
         admins: {
           mindCaptains: mindCaptainsCount,

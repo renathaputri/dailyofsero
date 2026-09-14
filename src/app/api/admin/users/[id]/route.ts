@@ -12,9 +12,33 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { name, role, title, newPassword, bio, photoUrl } = await req.json();
+    const { username, name, role, title, newPassword, bio, photoUrl } = await req.json();
 
     const updateData: any = {};
+
+    if (username) {
+      const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
+      if (cleanUsername.length < 3) {
+        return NextResponse.json(
+          { error: "Username minimal 3 karakter (hanya huruf kecil, angka, dan garis bawah _)." },
+          { status: 400 }
+        );
+      }
+
+      // Check duplicate
+      const existing = await prisma.admin.findUnique({
+        where: { username: cleanUsername },
+      });
+      if (existing && existing.id !== params.id) {
+        return NextResponse.json(
+          { error: `Username @${cleanUsername} sudah digunakan oleh akun lain.` },
+          { status: 400 }
+        );
+      }
+
+      updateData.username = cleanUsername;
+    }
+
     if (name) updateData.name = name.trim();
     if (role) updateData.role = role;
     if (title) updateData.title = title;
@@ -47,7 +71,7 @@ export async function PUT(
       success: true,
       message: passwordWasReset
         ? `Password untuk @${updated.username} berhasil direset dan notifikasi in-app telah dikirimkan.`
-        : "Data admin berhasil diperbarui.",
+        : "Data akun berhasil diperbarui.",
       admin: {
         id: updated.id,
         username: updated.username,

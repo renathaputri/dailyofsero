@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
           </h1>
           <p className="text-xs sm:text-sm text-sero-purple-50 max-w-xl leading-relaxed">
             {isSuperadmin
-              ? "Pantau pertumbuhan user terdaftar, karya publikasi, event, dan kesehatan ekosistem DailyOfSero."
+              ? "Pantau pertumbuhan user terdaftar, karya publikasi, event, dan kesehatan ekosistem MindSpace."
               : "Kelola karya edukasi Instagram kamu, lengkapi mini portfolio, dan perkaya Content Bank untuk pengunjung."}
           </p>
         </div>
@@ -104,7 +104,7 @@ export default function AdminDashboardPage() {
               </div>
               <p className="text-3xl font-black text-slate-900">{stats.events.total}</p>
               <p className="text-[11px] text-slate-500 mt-1">
-                {stats.events.upcoming} Upcoming • {stats.events.past} Selesai
+                {stats.events.upcoming} Akan Datang • {stats.events.past} Selesai
               </p>
             </div>
 
@@ -169,13 +169,12 @@ export default function AdminDashboardPage() {
               <div className="space-y-3">
                 {data.recentUsers?.map((u: any) => (
                   <div key={u.id} className="p-3 rounded-2xl bg-slate-50 flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-800 truncate">{u.email}</span>
-                    <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                        u.isVerified ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
-                      }`}
-                    >
-                      {u.isVerified ? "Verified" : "Unverified"}
+                    <div className="truncate">
+                      <span className="font-bold text-slate-800">@{u.username}</span>
+                      <span className="text-slate-400 ml-2">{u.email}</span>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-700 flex-shrink-0">
+                      Aktif
                     </span>
                   </div>
                 ))}
@@ -211,7 +210,7 @@ export default function AdminDashboardPage() {
             <div>
               <h3 className="text-lg font-bold text-slate-900">Mini Portfolio</h3>
               <p className="text-xs text-slate-500 mt-1">
-                Perbarui foto profil, nama tampilan, dan biografi untuk tampil di halaman Our Team.
+                Perbarui foto profil, nama tampilan, dan biografi untuk tampil di halaman Serotonin 5.
               </p>
             </div>
             <a

@@ -9,8 +9,25 @@ interface Counselor {
   photoUrl?: string;
 }
 
+const DEFAULT_COUNSELORS: Counselor[] = [
+  {
+    id: "ks-1",
+    name: "Dr. Amanda Permata, M.Psi, Psikolog Klinis",
+  },
+  {
+    id: "ks-2",
+    name: "Bima Prasetya, S.Psi, Konselor Mindfulness",
+  },
+  {
+    id: "ks-3",
+    name: "Citra Anindya, M.Psi, Konselor Remaja & Dewasa Awal",
+  },
+];
+
+const HEALMIND_BOOKING_URL = "https://healmind-ivory.vercel.app/?source=awaresoul&ref=AS-0163&counselor=KS-1779080609411";
+
 export default function AwareMindPage() {
-  const [counselors, setCounselors] = useState<Counselor[]>([]);
+  const [counselors, setCounselors] = useState<Counselor[]>(DEFAULT_COUNSELORS);
   const [loading, setLoading] = useState(true);
 
   const officialUrl = process.env.NEXT_PUBLIC_AWAREMIND_URL || "https://awaremind.id";
@@ -20,9 +37,16 @@ export default function AwareMindPage() {
     fetch("/api/counselors")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.counselors) setCounselors(data.counselors);
+        if (data?.counselors && Array.isArray(data.counselors) && data.counselors.length > 0) {
+          setCounselors(data.counselors);
+        } else {
+          setCounselors(DEFAULT_COUNSELORS);
+        }
       })
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        console.error(err);
+        setCounselors(DEFAULT_COUNSELORS);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -51,18 +75,18 @@ export default function AwareMindPage() {
             Siap untuk Berkonsultasi dengan Psikolog?
           </h2>
           <p className="text-xs sm:text-sm text-rose-100 max-w-xl leading-relaxed">
-            Seluruh proses penjadwalan dan sesi konseling dilakukan melalui platform resmi AwareMind secara aman dan terenkripsi.
+            Seluruh proses penjadwalan dan sesi konseling dilakukan secara aman dan terenkripsi.
           </p>
         </div>
 
         <div className="flex-shrink-0 relative z-10 flex flex-col sm:flex-row gap-3">
           <a
-            href={officialUrl}
+            href={HEALMIND_BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="px-6 py-3.5 rounded-full bg-white text-rose-700 hover:bg-rose-50 font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2"
           >
-            <span>Kunjungi Website Resmi</span>
+            <span>Lihat & booking</span>
             <ExternalLink className="w-4 h-4" />
           </a>
           <a
@@ -85,7 +109,7 @@ export default function AwareMindPage() {
             Daftar Konselor & Psikolog Mitra
           </h3>
           <span className="text-xs text-slate-400 font-medium">
-            (Pemesanan sesi melalui tautan AwareMind)
+            (Pemesanan sesi melalui tautan Lihat & booking)
           </span>
         </div>
 
@@ -104,21 +128,11 @@ export default function AwareMindPage() {
             {counselors.map((c) => (
               <div
                 key={c.id}
-                className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between text-center"
+                className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between text-center group"
               >
                 <div>
-                  <div className="relative w-28 h-28 mx-auto mb-4">
-                    {c.photoUrl ? (
-                      <img
-                        src={c.photoUrl}
-                        alt={c.name}
-                        className="w-full h-full rounded-2xl object-cover border-2 border-slate-100 shadow-md"
-                      />
-                    ) : (
-                      <div className="w-full h-full rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center">
-                        <User className="w-12 h-12" />
-                      </div>
-                    )}
+                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-rose-50 to-purple-50 border-2 border-rose-100 text-rose-600 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300">
+                    <User className="w-12 h-12 text-rose-500" />
                   </div>
 
                   <h4 className="text-base font-bold text-slate-900 mb-1">
@@ -131,16 +145,16 @@ export default function AwareMindPage() {
 
                 <div className="pt-4 border-t border-slate-100 space-y-2">
                   <a
-                    href={officialUrl}
+                    href={HEALMIND_BOOKING_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-1.5"
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-bold text-xs shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5"
                   >
-                    <span>Book / Hubungi Sesi</span>
+                    <span>Lihat & booking</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                   <p className="text-[10px] text-slate-400">
-                    Redirect ke awaremind.id
+                    Sesi online via platform HealMind
                   </p>
                 </div>
               </div>

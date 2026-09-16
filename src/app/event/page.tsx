@@ -51,31 +51,28 @@ export default function EventsPage() {
       <div className="flex items-center justify-center gap-2 mb-10">
         <button
           onClick={() => setFilter("UPCOMING")}
-          className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
-            filter === "UPCOMING"
+          className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${filter === "UPCOMING"
               ? "bg-slate-900 text-white shadow-sm"
               : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-          }`}
+            }`}
         >
           Akan Datang
         </button>
         <button
           onClick={() => setFilter("PAST")}
-          className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
-            filter === "PAST"
+          className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${filter === "PAST"
               ? "bg-slate-900 text-white shadow-sm"
               : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-          }`}
+            }`}
         >
           Sudah Selesai
         </button>
         <button
           onClick={() => setFilter("ALL")}
-          className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
-            filter === "ALL"
+          className={`px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${filter === "ALL"
               ? "bg-slate-900 text-white shadow-sm"
               : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
-          }`}
+            }`}
         >
           Semua Event
         </button>
@@ -115,11 +112,10 @@ export default function EventsPage() {
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span
-                      className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
-                        isUpcoming
+                      className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${isUpcoming
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                           : "bg-slate-100 text-slate-600 border-slate-200"
-                      }`}
+                        }`}
                     >
                       {isUpcoming ? "Akan Datang" : "Selesai"}
                     </span>

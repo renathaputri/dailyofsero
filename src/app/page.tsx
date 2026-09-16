@@ -408,12 +408,12 @@ export default function HomePage() {
                 </a>
 
                 <a
-                  href={awaremindUrl}
+                  href="https://healmind-ivory.vercel.app/?source=awaresoul&ref=AS-0163&counselor=KS-1779080609411"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold text-sm text-center transition-all flex items-center justify-center gap-2"
                 >
-                  <span>Kunjungi Website Resmi</span>
+                  <span>Lihat & booking</span>
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </div>

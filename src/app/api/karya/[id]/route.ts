@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { sendTakedownEmail } from "@/lib/email";
 
+export const dynamic = "force-dynamic";
+
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }

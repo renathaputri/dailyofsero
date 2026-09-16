@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { encryptJournal, decryptJournal } from "@/lib/crypto";
 import { updateUserStreak } from "@/lib/streak";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const session = await getSession();

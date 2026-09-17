@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   Heart, 
   Wind, 
@@ -21,6 +22,7 @@ import {
   Moon, 
   CloudRain, 
   HelpCircle,
+  Shield,
   ShieldCheck,
   Compass,
   ArrowLeft,
@@ -76,7 +78,7 @@ type TabType = "OVERVIEW" | "JOURNAL" | "MOOD" | "BREATHING" | "BOOKMARKS" | "PR
 
 export default function HealingPage() {
   const [activeTab, setActiveTab] = useState<TabType>("OVERVIEW");
-  const [user, setUser] = useState<{ id: string; name?: string; username?: string; email?: string } | null>(null);
+  const [user, setUser] = useState<{ id: string; name?: string; username?: string; email?: string; type?: "USER" | "ADMIN" } | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   // Mood state
@@ -104,10 +106,12 @@ export default function HealingPage() {
     fetch("/api/auth/me")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data?.user?.type === "USER") {
+        if (data?.user) {
           setUser(data.user);
-          loadJournalEntries();
-          loadBookmarks();
+          if (data.user.type === "USER") {
+            loadJournalEntries();
+            loadBookmarks();
+          }
         } else {
           setUser(null);
         }
@@ -321,20 +325,20 @@ export default function HealingPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-            <a
+            <Link
               href="/login?redirect=/healing"
               className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-sero-purple-600 to-indigo-600 hover:from-sero-purple-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all"
             >
               <LogIn className="w-4 h-4" />
               <span>Masuk ke Akun Saya</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="/register"
               className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm flex items-center justify-center gap-2 transition-all"
             >
               <UserPlus className="w-4 h-4" />
               <span>Daftar Akun Gratis</span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -358,7 +362,15 @@ export default function HealingPage() {
                   {user.name || user.username || "Teman Sero"}
                 </h3>
                 <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-emerald-600" /> Member Terverifikasi
+                  {user.type === "ADMIN" ? (
+                    <>
+                      <Shield className="w-3 h-3 text-indigo-600" /> Akun Admin / BA
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-3 h-3 text-emerald-600" /> Member Terverifikasi
+                    </>
+                  )}
                 </span>
               </div>
             </div>

@@ -14,14 +14,26 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    const { name, photoUrl } = await req.json();
+    const { id } = await Promise.resolve(params);
+    const body = await req.json();
+    const { name, photoUrl } = body;
+
+    const data: { name?: string; photoUrl?: string | null } = {};
+
+    if (name !== undefined) {
+      if (!name || !name.trim()) {
+        return NextResponse.json({ error: "Nama konselor wajib diisi." }, { status: 400 });
+      }
+      data.name = name.trim();
+    }
+
+    if (photoUrl !== undefined) {
+      data.photoUrl = photoUrl && photoUrl.trim() ? photoUrl.trim() : null;
+    }
 
     const updated = await prisma.counselor.update({
-      where: { id: params.id },
-      data: {
-        name: name ? name.trim() : undefined,
-        photoUrl: photoUrl || undefined,
-      },
+      where: { id },
+      data,
     });
 
     return NextResponse.json({ success: true, counselor: updated });
@@ -41,8 +53,9 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
+    const { id } = await Promise.resolve(params);
     await prisma.counselor.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true, message: "Konselor berhasil dihapus." });

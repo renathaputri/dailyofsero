@@ -15,8 +15,10 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await Promise.resolve(params);
+
     const karya = await prisma.karya.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!karya) {
@@ -28,15 +30,30 @@ export async function PUT(
       return NextResponse.json({ error: "Kamu hanya bisa mengedit karya milikmu sendiri." }, { status: 403 });
     }
 
-    const { title, description, category, linkPost } = await req.json();
+    const { title, description, category, linkPost, ownerId } = await req.json();
+
+    const data: any = {};
+    if (title !== undefined) data.title = title.trim();
+    if (description !== undefined) data.description = description.trim();
+    if (category !== undefined) data.category = category;
+    if (linkPost !== undefined) data.linkPost = linkPost.trim();
+    if (session.role === "SUPERADMIN" && ownerId) {
+      data.ownerId = ownerId;
+    }
 
     const updated = await prisma.karya.update({
-      where: { id: params.id },
-      data: {
-        title: title ? title.trim() : undefined,
-        description: description ? description.trim() : undefined,
-        category: category || undefined,
-        linkPost: linkPost ? linkPost.trim() : undefined,
+      where: { id },
+      data,
+      include: {
+        owner: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+            title: true,
+            photoUrl: true,
+          },
+        },
       },
     });
 
@@ -57,8 +74,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await Promise.resolve(params);
+
     const karya = await prisma.karya.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         owner: true,
       },
@@ -99,7 +118,7 @@ export async function DELETE(
 
     // Hard delete
     await prisma.karya.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({

@@ -158,6 +158,31 @@ export default function AdminKaryaPage() {
         </button>
       </div>
 
+      {/* Superadmin banner shortcut */}
+      {admin?.role === "SUPERADMIN" && (
+        <div className="p-4 rounded-3xl bg-indigo-50/80 border border-indigo-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+              <BookOpen className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-indigo-950">
+                Kamu memiliki hak akses Superadmin
+              </p>
+              <p className="text-[11px] text-indigo-700">
+                Ingin melihat, mengedit, atau men-takedown karya milik admin/BA lain? Gunakan panel Kontrol Semua Karya.
+              </p>
+            </div>
+          </div>
+          <a
+            href="/admin/superadmin-karya"
+            className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition-all whitespace-nowrap"
+          >
+            Buka Kontrol Semua Karya →
+          </a>
+        </div>
+      )}
+
       {/* Table / List */}
       <div className="bg-white rounded-4xl border border-slate-200 shadow-sm overflow-hidden">
         {loading ? (

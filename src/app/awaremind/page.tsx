@@ -131,8 +131,16 @@ export default function AwareMindPage() {
                 className="p-6 rounded-3xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between text-center group"
               >
                 <div>
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-rose-50 to-purple-50 border-2 border-rose-100 text-rose-600 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300">
-                    <User className="w-12 h-12 text-rose-500" />
+                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-rose-50 to-purple-50 border-2 border-rose-100 text-rose-600 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300 overflow-hidden">
+                    {c.photoUrl ? (
+                      <img
+                        src={c.photoUrl}
+                        alt={c.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <User className="w-12 h-12 text-rose-500" />
+                    )}
                   </div>
 
                   <h4 className="text-base font-bold text-slate-900 mb-1">

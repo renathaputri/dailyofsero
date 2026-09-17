@@ -50,6 +50,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   const superadminNavItems = [
+    { href: "/admin/superadmin-karya", label: "Semua Karya Admin", icon: BookOpen },
+    { href: "/admin/superadmin-content-bank", label: "Semua Content Bank", icon: Database },
     { href: "/admin/events", label: "Kelola Event", icon: Calendar },
     { href: "/admin/counselors", label: "Konselor AwareMind", icon: Shield },
     { href: "/admin/users", label: "Akun Tim & Password", icon: Users },

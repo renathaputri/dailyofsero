@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Sparkles, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect");
+
   const [tab, setTab] = useState<"USER" | "ADMIN">("USER");
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -36,8 +40,12 @@ export default function LoginPage() {
         return;
       }
 
-      // Success
-      window.location.href = data.redirect || "/";
+      // Redirect destination priority: query param (if safe internal path) > API redirect > fallback
+      const targetUrl = redirectParam && redirectParam.startsWith("/") 
+        ? redirectParam 
+        : data.redirect || "/";
+
+      window.location.href = targetUrl;
     } catch (err) {
       setError("Terjadi kendala jaringan saat menghubungi server.");
       setLoading(false);
@@ -74,7 +82,7 @@ export default function LoginPage() {
                   : "text-slate-500 hover:text-slate-800"
               }`}
             >
-              Pengunjung (User)
+              Pengunjung
             </button>
             <button
               type="button"
@@ -88,12 +96,12 @@ export default function LoginPage() {
                   : "text-slate-500 hover:text-slate-800"
               }`}
             >
-              Tim BA & Admin
+              Admin & BA
             </button>
           </div>
 
           {error && (
-            <div className="mb-5 p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-rose-700 text-xs sm:text-sm leading-relaxed animate-in fade-in">
+            <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-rose-700 text-xs sm:text-sm animate-in fade-in duration-200">
               <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -105,17 +113,21 @@ export default function LoginPage() {
                 {tab === "USER" ? "Email atau Username" : "Username Admin / BA"}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                  {tab === "USER" ? <Mail className="w-4 h-4" /> : <User className="w-4 h-4" />}
-                </div>
                 <input
-                  type="text"
+                  type={tab === "USER" ? "text" : "text"}
                   required
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder={tab === "USER" ? "email atau username kamu" : "username_kamu"}
-                  className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sero-purple-400 focus:border-transparent text-sm transition-all"
+                  placeholder={
+                    tab === "USER"
+                      ? "nama@email.com atau username"
+                      : "username resmi tim serotonin"
+                  }
+                  className="w-full px-4 py-3 pl-11 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sero-purple-500/20 focus:border-sero-purple-500 text-slate-900 text-sm font-medium transition-all"
                 />
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  {tab === "USER" ? <Mail className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                </div>
               </div>
             </div>
 
@@ -125,27 +137,26 @@ export default function LoginPage() {
                   Kata Sandi
                 </label>
                 {tab === "USER" && (
-                  <a
+                  <Link
                     href="/forgot-password"
-                    className="text-xs font-medium text-sero-purple-600 hover:text-sero-purple-700 hover:underline"
+                    className="text-xs font-semibold text-sero-blue-600 hover:text-sero-blue-700 hover:underline"
                   >
-                    Lupa password?
-                  </a>
+                    Lupa sandi?
+                  </Link>
                 )}
               </div>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="w-4 h-4" />
-                </div>
                 <input
                   type="password"
                   required
-                  minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sero-purple-400 focus:border-transparent text-sm transition-all"
+                  placeholder="Minimal 6 karakter"
+                  className="w-full px-4 py-3 pl-11 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sero-purple-500/20 focus:border-sero-purple-500 text-slate-900 text-sm font-medium transition-all"
                 />
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                  <Lock className="w-4 h-4" />
+                </div>
               </div>
             </div>
 
@@ -173,12 +184,12 @@ export default function LoginPage() {
             <div className="mt-6 pt-6 border-t border-slate-100 text-center">
               <p className="text-xs sm:text-sm text-slate-500">
                 Belum punya akun?{" "}
-                <a
+                <Link
                   href="/register"
                   className="font-bold text-sero-blue-600 hover:text-sero-blue-700 hover:underline"
                 >
                   Daftar sekarang
-                </a>
+                </Link>
               </p>
             </div>
           )}
@@ -193,5 +204,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-sero-purple-500 border-t-transparent animate-spin" />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

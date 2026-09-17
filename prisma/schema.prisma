@@ -157,6 +157,7 @@ model ContentBankBookmark {
 model Counselor {
   id        String   @id @default(cuid())
   name      String
+  tags      String?
   photoUrl  String?
   createdAt DateTime @default(now())
 }

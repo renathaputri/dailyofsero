@@ -6,6 +6,7 @@ import { ShieldAlert, ExternalLink, HeartHandshake, PhoneCall, Sparkles, CheckCi
 interface Counselor {
   id: string;
   name: string;
+  tags?: string | null;
   photoUrl?: string;
 }
 
@@ -13,14 +14,17 @@ const DEFAULT_COUNSELORS: Counselor[] = [
   {
     id: "ks-1",
     name: "Dr. Amanda Permata, M.Psi, Psikolog Klinis",
+    tags: "Relasi Romantis, Dukungan Emosional",
   },
   {
     id: "ks-2",
     name: "Bima Prasetya, S.Psi, Konselor Mindfulness",
+    tags: "Pengembangan Diri, Manajemen Stres",
   },
   {
     id: "ks-3",
     name: "Citra Anindya, M.Psi, Konselor Remaja & Dewasa Awal",
+    tags: "Keluarga & Relasi, Dukungan Emosional",
   },
 ];
 
@@ -146,9 +150,33 @@ export default function AwareMindPage() {
                   <h4 className="text-base font-bold text-slate-900 mb-1">
                     {c.name}
                   </h4>
-                  <p className="text-xs text-slate-500 font-medium mb-4">
+                  <p className="text-xs text-slate-500 font-medium mb-3">
                     Psikolog Berlisensi • Mitra AwareMind
                   </p>
+
+                  {/* Tags / Spesialisasi Konselor */}
+                  {c.tags ? (
+                    <div className="flex flex-wrap items-center justify-center gap-1.5 mb-4">
+                      {c.tags
+                        .split(",")
+                        .map((t) => t.trim())
+                        .filter(Boolean)
+                        .map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 border border-rose-100/80 text-rose-700 shadow-xs"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                    </div>
+                  ) : (
+                    <div className="mb-4">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-500">
+                        #Konseling Umum
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t border-slate-100 space-y-2">

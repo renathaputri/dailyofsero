@@ -16,15 +16,19 @@ export async function PUT(
 
     const { id } = await Promise.resolve(params);
     const body = await req.json();
-    const { name, photoUrl } = body;
+    const { name, photoUrl, tags } = body;
 
-    const data: { name?: string; photoUrl?: string | null } = {};
+    const data: { name?: string; photoUrl?: string | null; tags?: string | null } = {};
 
     if (name !== undefined) {
       if (!name || !name.trim()) {
         return NextResponse.json({ error: "Nama konselor wajib diisi." }, { status: 400 });
       }
       data.name = name.trim();
+    }
+
+    if (tags !== undefined) {
+      data.tags = tags && tags.trim() ? tags.trim() : null;
     }
 
     if (photoUrl !== undefined) {

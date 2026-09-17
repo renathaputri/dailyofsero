@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Hanya Superadmin yang dapat menambahkan data konselor." }, { status: 403 });
     }
 
-    const { name, photoUrl } = await req.json();
+    const { name, photoUrl, tags } = await req.json();
     if (!name || !name.trim()) {
       return NextResponse.json({ error: "Nama konselor wajib diisi." }, { status: 400 });
     }
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     const counselor = await prisma.counselor.create({
       data: {
         name: name.trim(),
+        tags: tags && tags.trim() ? tags.trim() : null,
         photoUrl: photoUrl || "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80",
       },
     });

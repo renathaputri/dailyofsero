@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Plus, Trash2, Edit3, User, Upload, Link as LinkIcon, X, Check, AlertCircle, RefreshCw, Tag } from "lucide-react";
+import { toast, confirmModal } from "@/components/Toast";
 
 interface Counselor {
   id: string;
@@ -181,18 +182,26 @@ export default function AdminCounselorsPage() {
   };
 
   const handleDelete = async (id: string, counselorName: string) => {
-    if (!confirm(`Apakah kamu yakin ingin menghapus konselor "${counselorName}"?`)) return;
+    const confirmed = await confirmModal({
+      title: "Hapus Konselor?",
+      message: `Apakah kamu yakin ingin menghapus data konselor "${counselorName}"?`,
+      confirmText: "Hapus",
+      cancelText: "Batal",
+      isDanger: true,
+    });
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`/api/counselors/${id}`, { method: "DELETE" });
       if (res.ok) {
         setCounselors((prev) => prev.filter((c) => c.id !== id));
+        toast.success(`Data konselor "${counselorName}" berhasil dihapus.`);
       } else {
         const data = await res.json();
-        alert(data.error || "Gagal menghapus data konselor.");
+        toast.error(data.error || "Gagal menghapus data konselor.");
       }
     } catch (err) {
-      alert("Terjadi kesalahan koneksi.");
+      toast.error("Terjadi kesalahan koneksi.");
     }
   };
 

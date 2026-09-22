@@ -27,7 +27,7 @@ export default function TeamPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/team")
+    fetch(`/api/team?_t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (data?.team) setTeam(data.team);

@@ -148,7 +148,36 @@ export default function AdminPortfolioPage() {
       setPhotoUrl(uploadData.url);
       setCropModalOpen(false);
       setImgSrc("");
-      setStatusAlert({ type: "success", text: "Foto berhasil diunggah! Jangan lupa klik Simpan." });
+
+      // Automatically persist to database immediately so user doesn't need to click save
+      try {
+        const saveRes = await fetch("/api/admin/portfolio", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ photoUrl: uploadData.url }),
+        });
+
+        if (saveRes.ok) {
+          setStatusAlert({
+            type: "success",
+            text: "Foto profil berhasil diperbarui & otomatis tersimpan permanen ke database! Kamu tidak perlu menekan tombol Simpan di bawah lagi.",
+          });
+          setAdmin((prev: any) => ({ ...prev, photoUrl: uploadData.url }));
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("sero_auth_change"));
+          }
+        } else {
+          setStatusAlert({
+            type: "error",
+            text: "Foto berhasil diunggah tapi gagal disimpan ke database. Coba klik tombol Simpan di bawah.",
+          });
+        }
+      } catch (saveErr) {
+        setStatusAlert({
+          type: "error",
+          text: "Foto berhasil diunggah tapi gagal disimpan otomatis. Coba klik tombol Simpan di bawah.",
+        });
+      }
     } catch (err) {
       setStatusAlert({ type: "error", text: "Gagal mengunggah gambar." });
     } finally {
@@ -244,10 +273,14 @@ export default function AdminPortfolioPage() {
             </div>
 
             <div className="text-center sm:text-left space-y-2">
-              <p className="text-xs font-bold text-slate-800">Foto Profil</p>
+              <div className="flex items-center justify-center sm:justify-start gap-2">
+                <p className="text-xs font-bold text-slate-800">Foto Profil</p>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                  Auto-Save saat Crop
+                </span>
+              </div>
               <p className="text-[11px] text-slate-400 leading-relaxed">
-                Unggah foto dan crop persegi (1:1) untuk hasil terbaik.<br />
-                Format: JPG, PNG. Maks 5 MB.
+                Unggah foto dan atur crop (1:1). Foto akan <strong>langsung tersimpan otomatis</strong> ke profil tanpa perlu menekan tombol Simpan di bawah.
               </p>
               <button
                 type="button"
@@ -255,7 +288,7 @@ export default function AdminPortfolioPage() {
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sero-purple-50 hover:bg-sero-purple-100 text-sero-purple-700 text-xs font-bold transition-colors border border-sero-purple-200"
               >
                 <Upload className="w-3.5 h-3.5" />
-                <span>Unggah Foto</span>
+                <span>Pilih Foto Baru</span>
               </button>
               <input
                 ref={fileInputRef}
@@ -364,7 +397,7 @@ export default function AdminPortfolioPage() {
             {/* Footer */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
               <p className="text-[11px] text-slate-400">
-                Seret area crop agar pas dengan wajahmu
+                Atur crop wajahmu, lalu simpan.
               </p>
               <div className="flex items-center gap-2">
                 <button
@@ -386,12 +419,12 @@ export default function AdminPortfolioPage() {
                   {uploading ? (
                     <>
                       <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Mengunggah...</span>
+                      <span>Menyimpan ke Profil...</span>
                     </>
                   ) : (
                     <>
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Gunakan Foto Ini</span>
+                      <span>Simpan & Terapkan Foto Profil</span>
                     </>
                   )}
                 </button>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Calendar, Plus, Trash2, Edit3, ExternalLink, Clock } from "lucide-react";
+import { toast, confirmModal } from "@/components/Toast";
 
 interface EventItem {
   id: string;
@@ -77,26 +78,39 @@ export default function AdminEventsPage() {
       if (res.ok) {
         setModalOpen(false);
         loadEvents();
+        toast.success(editId ? "Event berhasil diperbarui!" : "Event baru berhasil dibuat!");
       } else {
-        alert("Gagal menyimpan event.");
+        toast.error("Gagal menyimpan event.");
       }
     } catch (err) {
       console.error(err);
+      toast.error("Terjadi kesalahan jaringan.");
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Hapus event "${title}"?`)) return;
+    const confirmed = await confirmModal({
+      title: "Hapus Event?",
+      message: `Apakah kamu yakin ingin menghapus event "${title}"?`,
+      confirmText: "Hapus",
+      cancelText: "Batal",
+      isDanger: true,
+    });
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`/api/events/${id}`, { method: "DELETE" });
       if (res.ok) {
         setEvents((prev) => prev.filter((e) => e.id !== id));
+        toast.success(`Event "${title}" berhasil dihapus.`);
+      } else {
+        toast.error("Gagal menghapus event.");
       }
     } catch (err) {
       console.error(err);
+      toast.error("Terjadi kesalahan jaringan.");
     }
   };
 

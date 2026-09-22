@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { BookOpen, Plus, Trash2, Edit3, ExternalLink, Instagram } from "lucide-react";
+import { toast, confirmModal } from "@/components/Toast";
 
 interface KaryaItem {
   id: string;
@@ -125,15 +126,26 @@ export default function AdminKaryaPage() {
   };
 
   const handleDelete = async (k: KaryaItem) => {
-    if (!confirm(`Hapus karya "${k.title}"?`)) return;
+    const confirmed = await confirmModal({
+      title: "Hapus Karya?",
+      message: `Apakah kamu yakin ingin menghapus karya "${k.title}"?`,
+      confirmText: "Hapus",
+      cancelText: "Batal",
+      isDanger: true,
+    });
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`/api/karya/${k.id}`, { method: "DELETE" });
       if (res.ok) {
         setKaryaList((prev) => prev.filter((item) => item.id !== k.id));
+        toast.success(`Karya "${k.title}" berhasil dihapus.`);
+      } else {
+        toast.error("Gagal menghapus karya.");
       }
     } catch (err) {
       console.error(err);
+      toast.error("Terjadi kesalahan jaringan.");
     }
   };
 

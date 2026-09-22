@@ -26,6 +26,7 @@ interface SessionUser {
   username?: string;
   role?: "ADMIN" | "SUPERADMIN";
   name?: string;
+  photoUrl?: string;
 }
 
 export default function Navbar() {
@@ -35,17 +36,26 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/auth/me")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data?.user) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      })
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false));
+    const loadUser = () => {
+      fetch(`/api/auth/me?_t=${Date.now()}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.user) {
+            setUser(data.user);
+          } else {
+            setUser(null);
+          }
+        })
+        .catch(() => setUser(null))
+        .finally(() => setLoading(false));
+    };
+
+    loadUser();
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("sero_auth_change", loadUser);
+      return () => window.removeEventListener("sero_auth_change", loadUser);
+    }
   }, [pathname]);
 
   // Main navigation links - Healing Corner is part of the core navigation
@@ -119,10 +129,18 @@ export default function Navbar() {
 
                 <Link
                   href="/profile"
-                  className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold rounded-full transition-all"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-bold rounded-full transition-all"
                   title="Lihat Profil"
                 >
-                  <UserIcon className="w-3.5 h-3.5 text-slate-500" />
+                  {user.photoUrl ? (
+                    <img
+                      src={user.photoUrl}
+                      alt={user.name || "Foto Profil"}
+                      className="w-5 h-5 rounded-full object-cover border border-slate-300"
+                    />
+                  ) : (
+                    <UserIcon className="w-3.5 h-3.5 text-slate-500" />
+                  )}
                   <span>{user.name || user.username || "Akun"}</span>
                 </Link>
 
@@ -218,7 +236,15 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="py-2.5 px-3 bg-slate-100 text-slate-700 font-semibold text-center rounded-xl text-xs flex items-center justify-center gap-1.5"
                   >
-                    <UserIcon className="w-3.5 h-3.5" />
+                    {user.photoUrl ? (
+                      <img
+                        src={user.photoUrl}
+                        alt="Avatar"
+                        className="w-4 h-4 rounded-full object-cover"
+                      />
+                    ) : (
+                      <UserIcon className="w-3.5 h-3.5" />
+                    )}
                     <span>Profil Saya</span>
                   </Link>
                   <button

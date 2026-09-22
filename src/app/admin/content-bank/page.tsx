@@ -14,6 +14,7 @@ import {
   X,
   RefreshCw,
 } from "lucide-react";
+import { toast, confirmModal } from "@/components/Toast";
 
 interface ContentItem {
   id: string;
@@ -168,18 +169,27 @@ export default function AdminContentBankPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Hapus item Content Bank ini?")) return;
+    const confirmed = await confirmModal({
+      title: "Hapus Konten?",
+      message: "Apakah kamu yakin ingin menghapus item Content Bank ini?",
+      confirmText: "Hapus",
+      cancelText: "Batal",
+      isDanger: true,
+    });
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`/api/content-bank/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (res.ok) {
         setItems((prev) => prev.filter((item) => item.id !== id));
+        toast.success("Item Content Bank berhasil dihapus.");
       } else {
-        alert(data.error || "Gagal menghapus.");
+        toast.error(data.error || "Gagal menghapus item.");
       }
     } catch (err) {
       console.error(err);
+      toast.error("Terjadi kesalahan jaringan.");
     }
   };
 

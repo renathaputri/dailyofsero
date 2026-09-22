@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { User, Mail, Shield, Trash2, AlertTriangle, CheckCircle2, Lock, Flame, LogOut } from "lucide-react";
+import { toast } from "@/components/Toast";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null);
@@ -54,8 +55,10 @@ export default function ProfilePage() {
         return;
       }
 
-      alert("Akun dan seluruh data jurnalmu telah dihapus secara permanen.");
-      window.location.href = "/";
+      toast.success("Akun dan seluruh data jurnalmu telah dihapus secara permanen.");
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1200);
     } catch (err) {
       setDeleteError("Terjadi kendala jaringan.");
       setDeleteLoading(false);
@@ -81,15 +84,33 @@ export default function ProfilePage() {
         {/* Profile Card */}
         <div className="p-6 sm:p-8 rounded-4xl bg-white border border-slate-200 shadow-sm space-y-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center shadow-xs">
-              <User className="w-8 h-8" />
-            </div>
+            {user?.photoUrl ? (
+              <img
+                src={user.photoUrl}
+                alt={user.name || "Foto Profil"}
+                className="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-sm"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center shadow-xs">
+                <User className="w-8 h-8" />
+              </div>
+            )}
             <div>
-              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sero-blue-100 text-sero-blue-700">
-                Pengunjung Terverifikasi
+              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                user?.type === "ADMIN"
+                  ? "bg-sero-purple-100 text-sero-purple-700"
+                  : "bg-sero-blue-100 text-sero-blue-700"
+              }`}>
+                {user?.type === "ADMIN"
+                  ? user?.role === "SUPERADMIN"
+                    ? "Superadmin Tim Sero"
+                    : user?.title?.replace("_", " ") || "Tim Serotonin"
+                  : "Pengunjung Terverifikasi"}
               </span>
-              <h2 className="text-lg font-bold text-slate-900 mt-1">@{user?.username}</h2>
-              <p className="text-xs text-slate-400">{user?.email}</p>
+              <h2 className="text-lg font-bold text-slate-900 mt-1">
+                {user?.name ? `${user.name} (@${user.username})` : `@${user?.username}`}
+              </h2>
+              <p className="text-xs text-slate-400">{user?.email || "Akun Terdaftar"}</p>
             </div>
           </div>
 
@@ -115,12 +136,22 @@ export default function ProfilePage() {
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
-            <a
-              href="/healing"
-              className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold text-center hover:bg-slate-800 transition-all"
-            >
-              Tulis Jurnal Hari Ini
-            </a>
+            {user?.type === "ADMIN" ? (
+              <a
+                href="/admin/portfolio"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-sero-purple-600 text-white text-xs font-bold text-center hover:bg-sero-purple-700 transition-all flex items-center justify-center gap-2"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                <span>Ubah Foto Profil & Bio Portfolio</span>
+              </a>
+            ) : (
+              <a
+                href="/healing"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-full bg-slate-900 text-white text-xs font-bold text-center hover:bg-slate-800 transition-all"
+              >
+                Tulis Jurnal Hari Ini
+              </a>
+            )}
             <button
               onClick={handleLogout}
               className="w-full sm:w-auto px-6 py-2.5 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center justify-center gap-2"

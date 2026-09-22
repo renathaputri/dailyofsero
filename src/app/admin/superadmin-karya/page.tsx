@@ -18,6 +18,7 @@ import {
   Instagram,
   AlertTriangle,
 } from "lucide-react";
+import { toast } from "@/components/Toast";
 
 interface KaryaItem {
   id: string;
@@ -173,13 +174,13 @@ export default function SuperadminKaryaPage() {
       if (res.ok) {
         setKaryaList((prev) => prev.filter((k) => k.id !== takedownTarget.id));
         setTakedownModalOpen(false);
-        alert(data.message || "Karya berhasil di-takedown.");
+        toast.success(data.message || "Karya berhasil di-takedown.");
       } else {
-        alert(data.error || "Gagal menghapus karya.");
+        toast.error(data.error || "Gagal menghapus karya.");
       }
     } catch (err) {
       console.error(err);
-      alert("Terjadi kesalahan jaringan.");
+      toast.error("Terjadi kesalahan jaringan.");
     } finally {
       setTakedownSubmitting(false);
     }

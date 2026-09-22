@@ -72,8 +72,8 @@ export default function HomePage() {
         });
       });
 
-    // Fetch Team Serotonin Batch 5
-    fetch("/api/team")
+    // Fetch Team Serotonin Batch 5 (no cache to ensure new photos appear instantly)
+    fetch(`/api/team?_t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (data?.team) setTeam(data.team);

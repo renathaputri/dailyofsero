@@ -32,6 +32,7 @@ import {
   LogIn,
   UserPlus
 } from "lucide-react";
+import { toast, confirmModal } from "@/components/Toast";
 
 // 7 Moods with Lucide icons (NO EMOJIS)
 const MOODS = [
@@ -102,16 +103,12 @@ export default function HealingPage() {
   const [breathingActive, setBreathingActive] = useState(false);
 
   useEffect(() => {
-    // 1. Fetch user session
+    // 1. Fetch user session (non-blocking)
     fetch("/api/auth/me")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.user) {
           setUser(data.user);
-          if (data.user.type === "USER") {
-            loadJournalEntries();
-            loadBookmarks();
-          }
         } else {
           setUser(null);
         }
@@ -119,7 +116,11 @@ export default function HealingPage() {
       .catch(() => setUser(null))
       .finally(() => setLoadingAuth(false));
 
-    // 2. Fetch Guided Prompts
+    // 2. Load Journal Entries & Bookmarks unconditionally for everyone (guest, user, admin)
+    loadJournalEntries();
+    loadBookmarks();
+
+    // 3. Fetch Guided Prompts
     fetch("/api/content-bank?type=GUIDED_PROMPT")
       .then((res) => res.json())
       .then((data) => {
@@ -127,7 +128,7 @@ export default function HealingPage() {
       })
       .catch(() => {});
 
-    // 3. Fetch Calming Sentences
+    // 4. Fetch Calming Sentences
     fetch("/api/content-bank?type=CALMING_SENTENCE")
       .then((res) => res.json())
       .then((data) => {
@@ -193,15 +194,26 @@ export default function HealingPage() {
   };
 
   const handleDeleteJournal = async (id: string) => {
-    if (!confirm("Apakah kamu yakin ingin menghapus catatan jurnal ini?")) return;
+    const confirmed = await confirmModal({
+      title: "Hapus Catatan Jurnal?",
+      message: "Catatan jurnal terenkripsi ini akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.",
+      confirmText: "Hapus Jurnal",
+      cancelText: "Batal",
+      isDanger: true,
+    });
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`/api/journal/${id}`, { method: "DELETE" });
       if (res.ok) {
         setEntries((prev) => prev.filter((e) => e.id !== id));
+        toast.success("Catatan jurnal berhasil dihapus.");
+      } else {
+        toast.error("Gagal menghapus catatan jurnal.");
       }
     } catch (err) {
       console.error(err);
+      toast.error("Terjadi kesalahan jaringan.");
     }
   };
 
@@ -248,104 +260,7 @@ export default function HealingPage() {
     return () => clearInterval(interval);
   }, [breathingActive, breathingPhase]);
 
-  // Loading state
-  if (loadingAuth) {
-    return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-sero-purple-100 border border-sero-purple-200 flex items-center justify-center animate-pulse">
-          <Heart className="w-6 h-6 text-sero-purple-600" />
-        </div>
-        <p className="text-sm font-semibold text-slate-500">Memeriksa autentikasi ruang aman...</p>
-      </div>
-    );
-  }
-
-  // ACCESS RESTRICTED: Public user is NOT logged in
-  if (!user) {
-    return (
-      <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-12">
-        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-slate-200 shadow-xl text-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-sero-purple-500 to-indigo-600 text-white mx-auto flex items-center justify-center shadow-lg shadow-sero-purple-200">
-            <Lock className="w-8 h-8" />
-          </div>
-
-          <div className="max-w-xl mx-auto space-y-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sero-purple-50 border border-sero-purple-200 text-sero-purple-700 text-xs font-bold uppercase tracking-wider">
-              <ShieldCheck className="w-3.5 h-3.5" /> Ruang Privat Terenkripsi
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              Healing Corner Hanya Dapat Diakses Setelah Masuk Akun
-            </h1>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Demi menjaga kerahasiaan dan privasi batinmu, seluruh fitur jurnal dienkripsi dengan standar <strong>AES-256</strong> yang terikat langsung ke akun pribadimu. Bahkan pengelola server tidak dapat membaca catatanmu.
-            </p>
-          </div>
-
-          {/* Feature Highlights Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto pt-2">
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-              <div className="p-2 rounded-xl bg-sero-purple-100 text-sero-purple-700">
-                <PenLine className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-xs font-bold text-slate-900">Jurnal Pribadi AES-256</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Tulis perasaan tanpa rasa takut, tersimpan aman dan terenkripsi.</p>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-              <div className="p-2 rounded-xl bg-amber-100 text-amber-700">
-                <Flame className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-xs font-bold text-slate-900">Pelacak Streak Refleksi</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Pantau konsistensi journaling harian untuk kesehatan mentalmu.</p>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-              <div className="p-2 rounded-xl bg-sky-100 text-sky-700">
-                <Wind className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-xs font-bold text-slate-900">Box Breathing 4-4-4</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Latihan pernapasan terpandu untuk merilekskan sistem saraf.</p>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3">
-              <div className="p-2 rounded-xl bg-emerald-100 text-emerald-700">
-                <Bookmark className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-xs font-bold text-slate-900">Koleksi Kalimat Favorit</h2>
-                <p className="text-xs text-slate-500 mt-0.5">Simpan kalimat motivasi dan ketenangan favoritmu kapan saja.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-            <Link
-              href="/login?redirect=/healing"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-sero-purple-600 to-indigo-600 hover:from-sero-purple-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Masuk ke Akun Saya</span>
-            </Link>
-            <Link
-              href="/register"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm flex items-center justify-center gap-2 transition-all"
-            >
-              <UserPlus className="w-4 h-4" />
-              <span>Daftar Akun Gratis</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ACCESS GRANTED: User is logged in, show Wide Layout with Sidebar
+  // All visitors (guest, user, admin) have full access to Safe Space
   return (
     <div className="w-full max-w-[1500px] mx-auto px-2 sm:px-4 lg:px-6 py-4 sm:py-6">
       <div className="flex flex-col lg:flex-row gap-6 items-start">
@@ -359,16 +274,20 @@ export default function HealingPage() {
               </div>
               <div className="overflow-hidden">
                 <h3 className="font-bold text-slate-900 text-sm truncate">
-                  {user.name || user.username || "Teman Sero"}
+                  {user ? (user.name || user.username || "Teman Sero") : "Tamu Safe Space"}
                 </h3>
                 <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                  {user.type === "ADMIN" ? (
+                  {user?.type === "ADMIN" ? (
                     <>
                       <Shield className="w-3 h-3 text-indigo-600" /> Akun Admin / BA
                     </>
-                  ) : (
+                  ) : user ? (
                     <>
                       <ShieldCheck className="w-3 h-3 text-emerald-600" /> Member Terverifikasi
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3 h-3 text-sero-purple-600" /> Ruang Bebas Akses
                     </>
                   )}
                 </span>
@@ -500,7 +419,7 @@ export default function HealingPage() {
                     <Sparkles className="w-4 h-4" /> Ruang Aman Pribadimu
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-black">
-                    Halo, {user.name || user.username || "Sahabat Sero"}
+                    Halo, {user?.name || user?.username || "Sahabat Sero"}
                   </h2>
                   <p className="text-xs sm:text-sm text-purple-100 leading-relaxed">
                     Setiap emosi yang hadir hari ini berharga. Ambil jeda sejenak untuk bernafas, mencatat isi pikiranmu, dan memulihkan energi batin.

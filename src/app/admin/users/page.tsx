@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Users, Plus, KeyRound, Edit3, ShieldAlert, CheckCircle2, Lock, Eye, EyeOff, User } from "lucide-react";
+import { toast } from "@/components/Toast";
 
 interface AdminUser {
   id: string;
@@ -87,7 +88,7 @@ export default function AdminUsersPage() {
       setName("");
       setBio("");
       loadAdmins();
-      alert(data.message);
+      toast.success(data.message || "Admin baru berhasil ditambahkan!");
     } catch (err) {
       setCreateError("Terjadi kesalahan jaringan.");
     } finally {

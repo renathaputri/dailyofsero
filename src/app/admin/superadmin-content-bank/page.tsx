@@ -16,6 +16,7 @@ import {
   Quote,
   BookOpen,
 } from "lucide-react";
+import { toast, confirmModal } from "@/components/Toast";
 
 interface ContentItem {
   id: string;
@@ -196,19 +197,27 @@ export default function SuperadminContentBankPage() {
   };
 
   const handleDelete = async (id: string, textPreview: string) => {
-    if (!confirm(`Hapus konten: "${textPreview.slice(0, 40)}..."?`)) return;
+    const confirmed = await confirmModal({
+      title: "Hapus Konten?",
+      message: `Apakah kamu yakin ingin menghapus konten: "${textPreview.slice(0, 45)}..."?`,
+      confirmText: "Hapus",
+      cancelText: "Batal",
+      isDanger: true,
+    });
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`/api/content-bank/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (res.ok) {
         setItems((prev) => prev.filter((i) => i.id !== id));
+        toast.success("Konten berhasil dihapus.");
       } else {
-        alert(data.error || "Gagal menghapus.");
+        toast.error(data.error || "Gagal menghapus konten.");
       }
     } catch (err) {
       console.error(err);
-      alert("Terjadi kesalahan jaringan.");
+      toast.error("Terjadi kesalahan jaringan.");
     }
   };
 

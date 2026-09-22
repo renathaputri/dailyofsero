@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import EmergencyButton from "@/components/EmergencyButton";
+import { ToastContainer } from "@/components/Toast";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
         <main className="flex-grow w-full">{children}</main>
         <Footer />
         <EmergencyButton />
+        <ToastContainer />
       </body>
     </html>
   );

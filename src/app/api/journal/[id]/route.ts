@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+const GUEST_COOKIE_NAME = "sero_guest_id";
 
 export async function DELETE(
   req: Request,
@@ -10,9 +13,7 @@ export async function DELETE(
 ) {
   try {
     const session = await getSession();
-    if (!session || session.type !== "USER") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const guestId = cookies().get(GUEST_COOKIE_NAME)?.value;
 
     const entry = await prisma.journalEntry.findUnique({
       where: { id: params.id },
@@ -22,7 +23,13 @@ export async function DELETE(
       return NextResponse.json({ error: "Entri jurnal tidak ditemukan." }, { status: 404 });
     }
 
-    if (entry.userId !== session.id) {
+    // Authorization check: User ID matches, or Admin ID matches guestId, or Guest Cookie matches guestId
+    const isOwner =
+      (session?.type === "USER" && entry.userId === session.id) ||
+      (session?.type === "ADMIN" && (entry.guestId === session.id || entry.guestId === guestId)) ||
+      (entry.guestId && entry.guestId === guestId);
+
+    if (!isOwner) {
       return NextResponse.json({ error: "Kamu tidak berhak menghapus jurnal ini." }, { status: 403 });
     }
 
